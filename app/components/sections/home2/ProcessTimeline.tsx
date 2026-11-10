@@ -1,0 +1,278 @@
+"use client";
+
+import {
+  motion,
+  useReducedMotion,
+  type Transition,
+  type Variants,
+} from "framer-motion";
+import { RevealGroup, RevealItem } from "../../../features/FeatureReveal";
+import { useLanguage } from "../../../i18n/LanguageProvider";
+import type { Locale } from "../../../i18n/config";
+
+/**
+ * Process timeline — ported from `section.how-section` in grsolidvariant.html.
+ *
+ * Later blocks in that stylesheet rebuild this fold as a timeline: the step
+ * numbers become lime circles with a white ring, and a 2px rule runs behind
+ * them — horizontal from 761px up, vertical below. The white ring is what
+ * masks the rule where it passes under each circle, so the card must stay on
+ * a white surface.
+ *
+ * Two things the HTML renders but never shows, both reproduced as-is:
+ * the eyebrow is hidden globally (`.eyebrow { display: none !important }`),
+ * and the trailing `<p>` is swapped for identical `h2::after` copy — kept here
+ * as a real paragraph so it stays selectable and readable to a screen reader.
+ */
+
+/* Copy from Growth-Rocket-Homepage(-NL)-Standalone.html's `#how` fold. */
+const COPY: Record<
+  Locale,
+  {
+    headingLead: string;
+    headingAccent: string;
+    headingTail: string;
+    intro: string;
+    footnote: string;
+    steps: { num: string; title: string; body: string; owner: string }[];
+  }
+> = {
+  en: {
+    headingLead: "Online within ",
+    headingAccent: "7 working days*.",
+    headingTail: "Without the tech headache.",
+    intro: "Four clear steps. We do the setup, you have the say.",
+    footnote:
+      "* The timeframe starts once we receive all required information and materials and depends on timely approvals.",
+    steps: [
+      {
+        num: "01",
+        title: "Tell us your story.",
+        body: "Share your services, contact details and any photos or branding you already have. We’ll guide you through what we need.",
+        owner: "YOU + US",
+      },
+      {
+        num: "02",
+        title: "We set it all up.",
+        body: "We build your website and connect your Growth Rocket Hub, ready for your everyday business tasks.",
+        owner: "WE TAKE IT FROM HERE",
+      },
+      {
+        num: "03",
+        title: "Review and approve.",
+        body: "Take a look, share your feedback and approve the final changes before we go live.",
+        owner: "YOUR SIGN-OFF",
+      },
+      {
+        num: "04",
+        title: "You’re ready to go.",
+        body: "Your website goes live on your domain. We show you around your Hub and stay here to help.",
+        owner: "READY FOR BUSINESS",
+      },
+    ],
+  },
+  nl: {
+    headingLead: "Binnen ",
+    headingAccent: "7 werkdagen online*.",
+    headingTail: "Zonder technisch gedoe.",
+    intro: "Vier heldere stappen. Wij regelen het, jij bepaalt.",
+    footnote:
+      "* De termijn begint zodra we alle benodigde informatie en materialen hebben ontvangen en is afhankelijk van tijdige goedkeuring.",
+    steps: [
+      {
+        num: "01",
+        title: "Vertel ons je verhaal.",
+        body: "Deel je diensten, contactgegevens en de foto’s of huisstijl die je al hebt. We helpen je bij het verzamelen van alles wat nodig is.",
+        owner: "Jij + wij",
+      },
+      {
+        num: "02",
+        title: "Wij regelen de rest.",
+        body: "We bouwen je website en koppelen je Growth Rocket Hub. Zo staat alles klaar voor je dagelijkse werk.",
+        owner: "Wij gaan aan de slag",
+      },
+      {
+        num: "03",
+        title: "Bekijk en keur goed.",
+        body: "Bekijk je website en laat weten wat je ervan vindt. Na de laatste aanpassingen geef jij akkoord voor de livegang.",
+        owner: "Jouw akkoord",
+      },
+      {
+        num: "04",
+        title: "Je kunt aan de slag.",
+        body: "Je website gaat live op je eigen domein. We laten je zien hoe je Hub werkt en blijven beschikbaar als je hulp nodig hebt.",
+        owner: "Klaar voor je klanten",
+      },
+    ],
+  },
+};
+
+/**
+ * One clock for the whole fold, so the rule can be timed against the cards
+ * rather than just appearing under them. Card `i` runs over
+ * `[LEAD + STEP*i, +CARD]`; the segment that leads to it starts once card
+ * `i - 1` is on screen and lands a beat before card `i` settles, so the line
+ * reads as drawing each card into place.
+ */
+const LEAD = 0.092; // before step 01 moves
+const STEP = 0.161; // between consecutive steps
+const CARD = 0.69; // a card's own fade-and-rise
+const DRAW = 0.575; // a segment's draw
+const DRAW_LEAD = 0.184; // after its own card, before the segment sets off
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE_DRAW: [number, number, number, number] = [0.33, 1, 0.68, 1];
+
+export default function ProcessTimeline() {
+  const reduced = useReducedMotion();
+  const { locale } = useLanguage();
+  const copy = COPY[locale];
+  const steps = copy.steps;
+
+  const list: Variants = { hidden: {}, show: {} };
+
+  const card: Variants = {
+    hidden: { opacity: 0, y: reduced ? 0 : 28 },
+    show: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: CARD, delay: LEAD + STEP * i, ease: EASE },
+    }),
+  };
+
+  // `custom` is the index of the step a segment *starts* from, so segment 0
+  // runs 01 → 02. Reduced motion keeps the rule whole and just fades it in.
+  const drawTransition = (i: number): Transition => ({
+    duration: reduced ? 0.3 : DRAW,
+    delay: LEAD + STEP * i + DRAW_LEAD,
+    ease: reduced ? "linear" : EASE_DRAW,
+  });
+
+  const drawX: Variants = {
+    hidden: reduced ? { opacity: 0 } : { scaleX: 0 },
+    show: (i: number) =>
+      reduced
+        ? { opacity: 1, transition: drawTransition(i) }
+        : { scaleX: 1, transition: drawTransition(i) },
+  };
+
+  const drawY: Variants = {
+    hidden: reduced ? { opacity: 0 } : { scaleY: 0 },
+    show: (i: number) =>
+      reduced
+        ? { opacity: 1, transition: drawTransition(i) }
+        : { scaleY: 1, transition: drawTransition(i) },
+  };
+
+  return (
+    <section
+      id="how"
+      aria-labelledby="how-heading"
+      className="full-bleed bg-white py-[60px] text-[#0a0516] md:py-[94px]"
+    >
+      <div className="fix">
+        {/* Only the head joins the shared reveal system. The timeline below it
+            keeps its own choreography: one clock drives the cards AND the rule
+            segments drawn between them, and a RevealGroup would take the cards
+            off that clock and leave the line drawing to nothing. */}
+        <RevealGroup className="mb-[30px] md:mb-[44px]">
+          <RevealItem>
+            <h2
+              id="how-heading"
+              className="m-0 font-bricolage text-[clamp(40px,4vw,58px)] font-semibold leading-[1.1] tracking-[-0.04em]"
+            >
+              {copy.headingLead}
+              <span className="text-[#5b2dce]">{copy.headingAccent}</span>
+              <br />
+              {copy.headingTail}
+            </h2>
+          </RevealItem>
+          <RevealItem
+            as="p"
+            className="mt-[22px] max-w-[420px] font-sans text-[17px] font-normal leading-[1.7] tracking-normal text-[#625a70]"
+          >
+            {copy.intro}
+          </RevealItem>
+        </RevealGroup>
+
+        <motion.div
+          variants={list}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="relative mt-[35px] grid grid-cols-1 gap-x-[24px] gap-y-[35px] md:mt-[50px] md:grid-cols-4 md:gap-[22px] lg:gap-[30px]"
+        >
+          {/* The rule the step circles sit on. The source draws it as one bar
+              behind the whole row (horizontal from 761px, vertical below), but
+              a single bar can only appear all at once, so it is cut into a
+              segment per step and each one is parented to the card it starts
+              from. Same painted result, and each segment can now be timed
+              against its own card. */}
+          {steps.map((step, i) => (
+            <motion.article
+              key={step.num}
+              custom={i}
+              variants={card}
+              className="relative z-[1] grid grid-cols-[40px_1fr] gap-x-[20px] gap-y-[12px] pt-[22px] md:block md:pt-0"
+            >
+              {/* Desktop rule: this circle's centre to the next one's, i.e. one
+                  column plus one gap. The last step keeps the source's tail out
+                  to 28px short of the row's right edge. Sits behind the circle,
+                  which masks it with its white ring. */}
+              <motion.span
+                aria-hidden
+                custom={i}
+                variants={drawX}
+                className={`absolute left-[28px] top-[28px] -z-10 hidden h-[2px] origin-left bg-[#ded8e7] md:block ${
+                  i < steps.length - 1
+                    ? "md:w-[calc(100%+22px)] lg:w-[calc(100%+30px)]"
+                    : "md:w-[calc(100%-56px)]"
+                }`}
+              />
+
+              {/* Mobile rule: centre of this circle to the centre of the next
+                  one, so nothing hangs above 01 or below the last step. The
+                  35px row gap plus the next card's 22px top padding and half
+                  its circle is the 77px overhang. */}
+              {i < steps.length - 1 && (
+                <motion.span
+                  aria-hidden
+                  custom={i}
+                  variants={drawY}
+                  className="absolute bottom-[-77px] left-[19px] top-[42px] -z-10 w-[2px] origin-top bg-[#ded8e7] md:hidden"
+                />
+              )}
+
+              <span className="row-span-3 row-start-1 grid h-[40px] w-[40px] place-items-center rounded-full bg-[#e4fa65] font-bricolage text-[18px] tracking-[-0.03em] text-[#0a0516] shadow-[0_0_0_6px_#fff] md:h-[56px] md:w-[56px] md:text-[24px] md:shadow-[0_0_0_8px_#fff]">
+                {step.num}
+              </span>
+
+              <h3 className="m-0 font-bricolage text-[25px] font-semibold leading-[1.05] tracking-[-0.035em] md:mt-[26px] md:text-[22px] lg:text-[25px]">
+                {step.title}
+              </h3>
+
+              <p className="m-0 font-sans text-[16px] leading-[1.75] text-[#625a70] md:mt-[15px]">
+                {step.body}
+              </p>
+
+              <span className="m-0 inline-flex w-max items-center rounded-full bg-[rgba(228,250,101,0.42)] px-[10px] py-[6px] font-sans text-[11px] font-bold tracking-[0.025em] text-[#0a0516] md:mt-[20px] md:px-[11px] md:py-[7px] md:text-[12px]">
+                {step.owner}
+              </span>
+            </motion.article>
+          ))}
+        </motion.div>
+
+        {/* The source's `.launch-terms` footnote for the asterisk above, on
+            ElecLaunch's small-print classes (the same fold on /electricians). */}
+        <RevealGroup delay={0.08}>
+          <RevealItem
+            as="p"
+            className="mt-[35px] font-sans text-[12px] leading-[1.6] text-[#6b6475]"
+          >
+            {copy.footnote}
+          </RevealItem>
+        </RevealGroup>
+      </div>
+    </section>
+  );
+}

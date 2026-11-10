@@ -1,0 +1,1274 @@
+@import "tailwindcss";
+
+@theme {
+  /* Breakpoints. Tailwind's own sm/md/lg/xl/2xl are unchanged — every other
+     page is already written against them — and three names extend the scale
+     at the ends, where the ported designs have steps Tailwind has no default
+     for: 2xs (above the smallest phones), xs (above a large phone) and 3xl
+     (ultra-wide). Named variants only, please: the home2 and designs ports
+     arrived full of one-off `min-[761px]:` / `max-[600px]:` media queries, so
+     neighbouring components broke to desktop at 761, 901, 1051, 1101 and
+     1220px and no two folds changed shape together. Those all now land on the
+     nearest name below, which is what makes the page turn as one.
+
+       2xs  360   <- source's 361 step
+       xs   520   <- source's 521 step
+       sm   640   <- source's 600 and 641 steps
+       md   768   <- source's 761 step
+       lg   1024  <- source's 900/901, 1051 and 1101 steps
+       xl   1280  <- source's 1220 step
+       3xl  1920  <- source's 1900 step
+
+     Reach for an arbitrary variant only when a number is genuinely tied to
+     something measured — a container's own max-width, say — and leave a
+     comment saying so. */
+  --breakpoint-2xs: 22.5rem;
+  --breakpoint-xs: 32.5rem;
+  --breakpoint-3xl: 120rem;
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-jakarta: var(--font-jakarta), system-ui, sans-serif;
+  --font-bricolage: var(--font-bricolage), system-ui, sans-serif;
+  --font-poppins: var(--font-poppins), system-ui, sans-serif;
+
+  /* Brand palette (from Figma variables) */
+  --color-haiti: #0a0516;
+  --color-ebony: #0c0a1a;
+  --color-violet-12: #170b33;
+  --color-violet-21: #3b0764;
+  --color-violet-23: #2e1065;
+  --color-violet-42: #5b21b6;
+  --color-violet-58: #7c3aed;
+  --color-violet-75: #c084fc;
+  --color-violet-76: #a78bfa;
+  --color-violet-92: #ddd6fe;
+  --color-violet-98: #f5f3ff;
+
+  --color-dolphin: #6b6580;
+  --color-slate-500: #64748b;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #d1d5db;
+
+  --color-green-500: #22c55e;
+  --color-green-600: #22a06b;
+  --color-green-700: #15803d;
+  --color-green-800: #065f46;
+  --color-green-100: #d1fae5;
+  --color-green-50: #ecfdf5;
+  --color-emerald-700: #047857;
+
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fed7aa;
+  --color-amber-500: #f59e0b;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-50: #fef9e7;
+  --color-amber-100: #fef3c7;
+
+  --color-kournikova: #ffe566;
+  --color-blue-brand: #3f69ff;
+  --color-blue-700: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-100: #dbeafe;
+  --color-blue-150: #bae6fd;
+
+  --color-red-600: #dc2626;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-50: #fff1f0;
+  --color-red-900: #4b1c1c;
+
+  --color-pink-200: #fbcfe8;
+
+  /* Home v2 (bento wireframe) */
+  --color-sand: #dad6c9;
+  --color-mist: #e6eefe;
+  --color-footer-bg: #f0ecff;
+}
+
+:root {
+  --bg: #ffffff;
+  --fg: #0a0516;
+  --content-width: 1320px;
+  --nav-h: 74px;
+
+  /* Features page fold geometry (see .newfix-card / .newfix).
+     Matched to /home2 so both pages read identically: HomeShell's card is
+     max-w-473 (1892px) and its rail is .fix-wide (1320px). */
+  --fold-content-width: 1892px;
+  /* 28px total = 14px each side, matching HomeShell's px-3.5. */
+  --fold-gutter: 28px;
+  /* Same 1180px rail as .fix, which /home2's sections use. */
+  --fold-rail-width: var(--content-width);
+
+  /* Brand gradient used in buttons, pills, and headline emphasis */
+  --grad-brand: linear-gradient(90deg, #5b219f 0%, #922698 100%);
+  /* Hero card frame gradient */
+  /* --grad-hero-frame: linear-gradient(140deg, #fef9e7 0%, #f5f3ff 30%, #fed7aa 100%); */
+  --grad-hero-frame: linear-gradient(
+    113deg,
+    #e6eefe 0%,
+    #f5f3ff 30%,
+    #fed7aa 100%
+  );
+
+  /* Scrollbar rail — the lightest violet tint, so the thumb sits in a groove
+     instead of floating over the page. Shared by the page bar and the inner
+     scrollers (blog tables, booking slots/services) so they all match. */
+  --scrollbar-track: #ede9fe;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Clears the fixed Navbar on `#hash` navigation. The bar is `top-3` (12px)
+     and 64px tall, so it ends at 76px; the extra 14px matches the gap the
+     bento sections keep between each other. Next.js skips fixed/sticky
+     elements when it picks a scroll target, so without this an anchored
+     section lands underneath the bar. */
+  scroll-padding-top: 90px;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  /* Firefox takes only solid colors: thumb, then the track the thumb runs in.
+     A transparent track left the thumb floating over whatever section it
+     happened to be passing, so it reads as a rail now. */
+  scrollbar-color: #c084fc var(--scrollbar-track);
+  overflow-x: hidden;
+}
+
+/* Modal open: lenis.stop() + overflow:hidden on <html>, never on <body>.
+   Because html sets overflow-x above, body's overflow is not passed up to the
+   viewport — overflow:hidden on body would make body its own scroll container,
+   and every `position: sticky` column (FAQ folds, etc.) would jump while a
+   modal is open. Hiding overflow on html locks the viewport itself. */
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Brand-coloured text selection — browsers only support solid colors here, no gradients */
+::selection {
+  background-color: #5b2dce;
+  color: #fff;
+}
+::-moz-selection {
+  background-color: #7c2ba0;
+  color: #fff;
+}
+
+/* Custom scrollbar track/thumb for webkit (page-level) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #5b219f 0%, #922698 100%);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7c3aed 0%, #a21caf 100%);
+}
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lenis — prevent native scroll-behavior from fighting JS-driven scroll */
+html,
+body {
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---------- Page primitives ---------- */
+
+/* Fixed content width (user spec: 1180). Sections are full-bleed; .fix centers content. */
+.fix {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+@media (min-width: 768px) {
+  .fix {
+    padding-inline: 0px;
+  }
+}
+
+/* Below the 1440px design width the rail stops being a fixed 1320px and becomes
+   a 90% column instead, so the 5% side gutters scale with the viewport rather
+   than collapsing to zero as the window narrows toward 1320px. */
+@media (max-width: 1439.98px) {
+  .fix {
+    width: 90%;
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+}
+
+/* Left-edge-only companion to .fix. Lines content up with the .fix container's
+   left gutter but adds nothing on the right, so it can run flush to its own
+   edge. Used by the home2 hero, whose copy panel is a half-width grid column:
+   a padding percentage there resolves against half a row, which makes the
+   gutter `column width - (--content-width / 2)`. Falls back to the panel's own
+   inset once the row is narrower than the content width.
+
+   The flush right edge only makes sense once the row is two columns wide: while
+   the panel is stacked full-width it mirrors the left gutter so the headline
+   cannot run into the panel edge. */
+.fix-left {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+@media (min-width: 901px) {
+  .fix-left {
+    padding-left: max(
+      clamp(32px, 5vw, 86px),
+      calc(100% - var(--content-width) / 2)
+    );
+    padding-right: 0;
+  }
+}
+/*  */
+/* Breaks a section out of any centered ancestor so it spans the whole viewport
+   — used for bands that must ignore HomeShell's sand padding and max width.
+   Safe against horizontal scroll because html already sets overflow-x: hidden. */
+.full-bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* Home v2 (bento wireframe): wider 1320px content area, always-on responsive
+   side padding that also centers once the viewport clears content+gutters. */
+.fix-wide {
+  padding-inline: max(clamp(20px, 4vw, 56px), calc((100% - 1320px) / 2));
+}
+
+/* Features page folds are two boxes, not one:
+
+   .newfix-card  the tinted, rounded, near-full-bleed shell (100% - 28px)
+   .newfix       the content rail inside it — the .fix of this page
+
+   Keeping them separate is what makes every fold's content line up on both
+   sides at every viewport, regardless of how wide the card behind it runs. */
+.newfix-card {
+  width: calc(100% - var(--fold-gutter));
+  max-width: var(--fold-content-width);
+  margin-inline: auto;
+}
+
+/* Mirrors /home2's content box. Its sections (see home2/Solution.tsx) sit in a
+   max-w-473 (1892px) card and use plain .fix inside — a 1180px rail with a
+   20px gutter that drops to 0 at 768px. Same rule here so both pages line up. */
+.newfix {
+  width: 100%;
+  max-width: var(--fold-rail-width);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+@media (min-width: 768px) {
+  .newfix {
+    padding-inline: 0px;
+  }
+}
+
+/* Footer background "ticker" marquee */
+@keyframes gr-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.gr-ticker-track {
+  animation: gr-ticker 38s linear infinite;
+}
+
+/* Home v2 testimonial column: continuous upward marquee. The track holds two
+   identical groups separated by the same gap used inside them, so lifting it
+   by half its height plus half a gap lands the copy exactly where the
+   original started — the seam never shows. `--marquee-gap` is set on the
+   track so the gap stays defined next to the layout that uses it. The scroll
+   is continuous by design — it does not pause on hover. */
+@keyframes gr-marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-50% - (var(--marquee-gap, 0px) / 2)));
+  }
+}
+.gr-marquee-up-track {
+  animation: gr-marquee-up var(--marquee-duration, 34s) linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gr-marquee-up-track {
+    animation: none;
+  }
+}
+
+/* Home v2 footer loop strip: the "Get started in 7 days" band above the
+   footer. The track starts flush at the left edge and slides to negative X, so
+   the type travels right to left — phrases enter at the right edge and exit at
+   the left. It holds the same phrase run twice with no gap between them, so
+   sliding it exactly half its width lands the second copy where the first
+   started and the seam never shows. (Swapping the two transforms below would
+   reverse it to left-to-right.) The duration is a variable so the strip can be
+   slowed or sped up from the component. */
+@keyframes gr-loop-strip {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.gr-loop-strip-track {
+  animation: gr-loop-strip var(--loop-strip-duration, 30s) linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gr-loop-strip-track {
+    animation: none;
+  }
+}
+
+/* ---------- Button system ---------- */
+
+.btn,
+.btn-primary,
+.btn-secondary {
+  --btn-py: 0.5rem; /* py-2 */
+  --btn-px: 22px;
+  --btn-fs: 15px;
+  --btn-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: var(--btn-py) var(--btn-px);
+  border-radius: var(--btn-radius);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--btn-fs);
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: scale(1.03);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--sm {
+  --btn-py: 0.375rem; /* py-1.5 */
+  --btn-px: 16px;
+  --btn-fs: 13px;
+}
+.btn--md {
+  --btn-py: 0.5rem; /* py-2 */
+  --btn-px: 22px;
+  --btn-fs: 15px;
+}
+.btn--lg {
+  --btn-py: 0.75rem; /* py-3 */
+  --btn-px: 28px;
+  --btn-fs: 16px;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+/* Variants */
+.btn--primary,
+.btn-primary {
+  background: var(--grad-brand);
+  color: #fff;
+}
+.btn--secondary,
+.btn-secondary {
+  background: #fff;
+  color: var(--color-haiti);
+  border: 1px solid var(--color-slate-200);
+  font-weight: 500;
+}
+.btn--secondary:hover,
+.btn-secondary:hover {
+  border-color: #d9d4f7;
+  background: #faf8ff;
+}
+.btn--dark {
+  background: #0a0516;
+  color: #fff;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--color-violet-42);
+  padding: 0;
+}
+.btn--ghost:hover {
+  color: var(--color-violet-58);
+}
+
+/* Arrow icon (swap animation) */
+.btn-arrow {
+  --arrow-size: 16px;
+  --tx-out: 0;
+  --ty-out: 0;
+  --tx-in: 0;
+  --ty-in: 0;
+  position: relative;
+  display: inline-block;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.btn--sm .btn-arrow {
+  --arrow-size: 14px;
+}
+.btn--md .btn-arrow {
+  --arrow-size: 16px;
+}
+.btn--lg .btn-arrow {
+  --arrow-size: 18px;
+}
+.btn-arrow[data-direction="up-right"] {
+  --tx-out: 100%;
+  --ty-out: -100%;
+  --tx-in: -100%;
+  --ty-in: 100%;
+}
+.btn-arrow[data-direction="up-left"] {
+  --tx-out: -100%;
+  --ty-out: -100%;
+  --tx-in: 100%;
+  --ty-in: 100%;
+}
+.btn-arrow[data-direction="down-right"] {
+  --tx-out: 100%;
+  --ty-out: 100%;
+  --tx-in: -100%;
+  --ty-in: -100%;
+}
+.btn-arrow[data-direction="down-left"] {
+  --tx-out: -100%;
+  --ty-out: 100%;
+  --tx-in: 100%;
+  --ty-in: -100%;
+}
+.btn-arrow[data-direction="right"] {
+  --tx-out: 100%;
+  --tx-in: -100%;
+}
+.btn-arrow[data-direction="left"] {
+  --tx-out: -100%;
+  --tx-in: 100%;
+}
+.btn-arrow[data-direction="up"] {
+  --ty-out: -100%;
+  --ty-in: 100%;
+}
+.btn-arrow[data-direction="down"] {
+  --ty-out: 100%;
+  --ty-in: -100%;
+}
+
+.btn-arrow__slot {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease-out;
+}
+.btn-arrow__rotation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.btn-arrow__slot--first {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+.btn-arrow__slot--second {
+  transform: translate(var(--tx-in), var(--ty-in));
+  opacity: 0;
+}
+.btn:hover .btn-arrow__slot--first,
+.btn-primary:hover .btn-arrow__slot--first,
+.btn-secondary:hover .btn-arrow__slot--first,
+.arrow-cta:hover .btn-arrow__slot--first,
+.arrow-swap:hover .btn-arrow__slot--first {
+  transform: translate(var(--tx-out), var(--ty-out));
+  opacity: 0;
+}
+.btn:hover .btn-arrow__slot--second,
+.btn-primary:hover .btn-arrow__slot--second,
+.btn-secondary:hover .btn-arrow__slot--second,
+.arrow-cta:hover .btn-arrow__slot--second,
+.arrow-swap:hover .btn-arrow__slot--second {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+/* Same lift + arrow swap as `.btn`, for the CTAs that are plain links or icon
+   buttons rather than <Button> — so every call to action on the page reacts
+   identically. Colour transitions ride along here because this rule is
+   unlayered and would otherwise clobber Tailwind's `transition-colors`. */
+.arrow-cta {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+.arrow-cta:hover {
+  transform: scale(1.03);
+}
+.arrow-cta:active {
+  transform: scale(0.98);
+}
+.arrow-cta:disabled {
+  transform: none;
+}
+
+/* Opt-in: put `arrow-cta-host` on a card (or any wrapper) that owns a single
+   `.arrow-cta`, and hovering anywhere in it plays that CTA's arrow swap and
+   lift. Without it the link sits inert while the card lights up around it, and
+   the arrow only answers a hover landing on the 90-odd pixels of "Read more".
+   These live here rather than as `group-hover:` utilities because the rules
+   they override are unlayered, and Tailwind's utility layer always loses to
+   them however specific the variant. */
+.arrow-cta-host:hover .arrow-cta {
+  transform: scale(1.03);
+}
+/* The press-down would otherwise be dead inside a host: any click on the link
+   happens while the card is hovered, and the rule above outranks
+   `.arrow-cta:active`. */
+.arrow-cta-host:hover .arrow-cta:active {
+  transform: scale(0.98);
+}
+.arrow-cta-host:hover .arrow-cta .btn-arrow__slot--first {
+  transform: translate(var(--tx-out), var(--ty-out));
+  opacity: 0;
+}
+.arrow-cta-host:hover .arrow-cta .btn-arrow__slot--second {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+/* The contact fold's circular link carries the same arrow at display size.
+   Doubled selector so it outranks `.btn-arrow`'s own `--arrow-size`. */
+.btn-arrow.btn-arrow--xl {
+  --arrow-size: 26px;
+}
+@media (min-width: 761px) {
+  .btn-arrow.btn-arrow--xl {
+    --arrow-size: 52px;
+  }
+}
+
+.btn-chip {
+  box-shadow: 0 2px 8px rgba(91, 33, 182, 0.06);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--color-violet-42);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+}
+.btn-chip .chip-badge {
+  background: var(--grad-brand);
+  color: #fff;
+  border: 1px solid var(--color-violet-58);
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  line-height: 15px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+.text-grad-brand {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.section-border-r,
+.section-border-l {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+}
+.section-border-l {
+  left: calc(50% - (var(--content-width) / 2));
+}
+.section-border-r {
+  left: calc(50% + (var(--content-width) / 2) - 1px);
+}
+
+.hero-border-r,
+.hero-border-l {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hero-border-r,
+  .hero-border-l {
+    display: block;
+  }
+}
+
+.hero-border-l {
+  left: calc(50% - (var(--content-width) / 2));
+}
+.hero-border-r {
+  left: calc(50% + (var(--content-width) / 2) - 1px);
+}
+
+/* Subtle section divider dash line */
+.section-divider-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--content-width), 100%);
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(148, 163, 184, 0.35) 50%,
+    transparent 100%
+  );
+}
+
+/* ---------- Blog theme (home2 palette) ----------
+
+   The blog pages were built against the old brand sheet: Poppins throughout,
+   the violet ramp (`--color-violet-42` = #5b21b6) for every accent, and the
+   two-stop `--grad-brand` on buttons and headline emphasis. /home2 replaced all
+   of that — Bricolage for display type, Inter for copy, one flat violet
+   (#5b2dce), lime (#e4fa65) as the accent, deep #0a0516 folds and a single 13px
+   radius.
+
+   Rather than rewrite the ~140 per-post components that reference those tokens,
+   `.blog-theme` on the page root repoints the tokens themselves at the home2
+   values. Anything written as `var(--color-…)` inside a blog page therefore
+   lands on the new palette without being touched; only the hard-coded hexes in
+   the newer posts had to be remapped by hand.
+
+   These rules are unlayered, so they beat Tailwind's utility layer whatever the
+   specificity — which is the point for the font rules below, where an explicit
+   `font-poppins` on a heading has to give way to Bricolage.
+
+   Scoped, never global: the same tokens still carry the old values on every
+   page that has not been ported. `.partner-theme` (/partner-network) borrows
+   the same token remap so its mockups and shared form land on the palette. */
+
+.blog-theme,
+.partner-theme {
+  /* Display/ink */
+  --color-haiti: #0a0516;
+  --color-ebony: #0a0516;
+
+  /* Accent — home2 has one violet, not a ramp. The lighter steps stay
+     distinguishable so borders and hairlines don't collapse into the accent. */
+  --color-violet-42: #5b2dce;
+  --color-violet-58: #6f3ff0;
+  --color-violet-75: #b9a6f2;
+  --color-violet-76: #b9a6f2;
+  --color-violet-92: #ded8e7;
+  --color-violet-98: #f5f3ff;
+
+  /* Copy. #625a70 is home2's body colour on light folds, #554c64 its stronger
+     step; the greys the blog borrowed from Tailwind's slate ramp are folded
+     onto the same two so the page reads in one hue. */
+  --color-dolphin: #625a70;
+  --color-slate-700: #554c64;
+  --color-slate-600: #554c64;
+  --color-slate-500: #8b8398;
+  --color-slate-300: #ded8e7;
+  --color-slate-200: #ded8e7;
+
+  /* Panels. These four were referenced by the guide components but never
+     defined anywhere, so those blocks have been rendering on a transparent
+     background — they get real values here. */
+  --color-blog-panel: #f5f3ff;
+  --color-blog-panel-light: #faf8ff;
+  --color-blog-panel-wash: #f7f4ff;
+  --color-blog-media: #ece7f6;
+
+  /* home2's buttons are flat violet, not a gradient. Kept as a one-stop
+     gradient rather than a colour so the `background-image` uses of this token
+     (`bg-[image:var(--grad-brand)]`, `.text-grad-brand`) stay valid. */
+  --grad-brand: linear-gradient(90deg, #5b2dce 0%, #5b2dce 100%);
+
+  /* Lime, for the accents the blog gained with this theme. */
+  --blog-lime: #e4fa65;
+}
+
+/* Display type. Every heading in a blog page is Bricolage at home2's weight and
+   tracking however the component asked for it; everything else is Inter. The
+   components say `font-poppins` in both places, which is why this is a scope
+   rule rather than a find-and-replace. */
+.blog-theme h1,
+.blog-theme h2,
+.blog-theme h3,
+.blog-theme h4,
+.blog-theme h5 {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-weight: 600;
+}
+.blog-theme h1,
+.blog-theme h2 {
+  letter-spacing: -0.04em;
+}
+.blog-theme h3,
+.blog-theme h4,
+.blog-theme h5 {
+  letter-spacing: -0.03em;
+}
+.blog-theme .font-poppins {
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+/* …unless the element is itself a heading, where the rule above wins anyway —
+   spelled out so the intent survives a reorder. */
+.blog-theme h1.font-poppins,
+.blog-theme h2.font-poppins,
+.blog-theme h3.font-poppins,
+.blog-theme h4.font-poppins,
+.blog-theme h5.font-poppins {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+}
+
+/* /partner-network: the shared <Button> (used by PartnerNetworkForm) as a
+   home2 pill — flat violet, lime on hover. */
+.partner-theme .btn {
+  --btn-radius: 999px;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.partner-theme .btn--primary {
+  background: #5b2dce;
+  color: #fff;
+}
+.partner-theme .btn--primary:hover:not(:disabled) {
+  background: #e4fa65;
+  color: #0a0516;
+}
+
+/* ---------- Blog content (rendered from WordPress HTML) ---------- */
+
+.blog-content {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--color-dolphin);
+}
+
+.blog-content p,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content li,
+.blog-content blockquote {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.blog-content h2 {
+  scroll-margin-top: 110px;
+  margin: 48px 0 24px;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--color-violet-42);
+}
+
+.blog-content h3 {
+  margin: 40px 0 16px;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--color-haiti);
+}
+
+.blog-content h4 {
+  margin: 32px 0 12px;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--color-haiti);
+}
+
+.blog-content p {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-dolphin);
+}
+
+.blog-content ul,
+.blog-content ol {
+  margin: 0 0 24px;
+  padding-left: 24px;
+  font-size: 15px;
+  color: var(--color-dolphin);
+}
+.blog-content ul {
+  list-style: disc;
+}
+.blog-content ol {
+  list-style: decimal;
+}
+
+.blog-content li {
+  padding-left: 4px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.blog-content a {
+  font-weight: 500;
+  color: var(--color-violet-42);
+  text-decoration: underline;
+}
+.blog-content a:hover {
+  color: var(--color-violet-58);
+}
+
+.blog-content strong {
+  color: var(--color-haiti);
+  font-weight: 600;
+}
+
+.blog-content table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  border-radius: 13px;
+  margin: 32px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #7c2ba0 var(--scrollbar-track);
+}
+.blog-content table::-webkit-scrollbar {
+  height: 5px;
+}
+.blog-content table::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+.blog-content table::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #5b219f 0%, #922698 100%);
+  border-radius: 999px;
+}
+.blog-content table::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #7c3aed 0%, #a21caf 100%);
+}
+.blog-content th {
+  border: 1px solid var(--color-violet-92);
+  background: var(--color-violet-98);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-haiti);
+  white-space: nowrap;
+}
+.blog-content td {
+  border: 1px solid var(--color-violet-92);
+  background: #fff;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-dolphin);
+  white-space: nowrap;
+}
+.blog-content .table-scroll {
+  margin: 0;
+}
+
+.blog-content img {
+  margin: 32px 0;
+  border-radius: 13px;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.blog-content blockquote {
+  margin: 32px 0;
+  border-radius: 13px;
+  background: var(--color-violet-98);
+  padding: 32px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-haiti);
+}
+
+.blog-content .table-wrapper {
+  margin: 32px 0;
+  overflow-x: auto;
+}
+
+/* ---------- Blog content: Elementor CTA blocks (from WordPress) ---------- */
+
+.blog-content .elementor {
+  margin: 40px 0;
+  padding: 20px;
+  border-radius: 13px;
+  background: var(--color-violet-98);
+  border: 1px solid var(--color-violet-92);
+  overflow: hidden;
+}
+
+.blog-content .elementor > .e-con {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.blog-content .elementor > .e-con > .e-con {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-content .elementor .elementor-widget-heading h3 {
+  margin: 0;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: clamp(18px, 2.4vw, 22px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-violet-42);
+}
+
+.blog-content .elementor .elementor-widget-text-editor {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-dolphin);
+}
+.blog-content .elementor .elementor-widget-text-editor p {
+  margin: 0;
+}
+
+.blog-content .elementor .elementor-widget-image {
+  display: flex;
+  justify-content: center;
+}
+.blog-content .elementor .elementor-widget-image img {
+  margin: 0;
+  border-radius: 13px;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+}
+
+.blog-content .elementor .elementor-button-wrapper {
+  margin-top: 8px;
+}
+
+.blog-content .elementor .elementor-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 22px;
+  border-radius: 999px;
+  background: var(--grad-brand);
+  color: #fff;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  /* arrow slot variables (up-right direction) */
+  --arrow-size: 16px;
+  --tx-out: 100%;
+  --ty-out: -100%;
+  --tx-in: -100%;
+  --ty-in: 100%;
+}
+.blog-content .elementor .elementor-button:hover {
+  transform: scale(1.03);
+}
+
+.blog-content .elementor .elementor-button-content-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.blog-content .elementor .elementor-button-text {
+  order: 1;
+}
+/* Replace the WordPress icon slot with an animated arrow slot */
+.blog-content .elementor .elementor-button-icon {
+  order: 2;
+  position: relative;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+/* Hide whatever icon WordPress put in */
+.blog-content .elementor .elementor-button-icon > * {
+  display: none;
+}
+/* Two pseudo-arrow slots using background-image SVG */
+.blog-content .elementor .elementor-button-icon::before,
+.blog-content .elementor .elementor-button-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-3 -3 20 20' fill='none'%3E%3Cpath d='M1 13L13 1M13 1H5M13 1V9' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease-out;
+}
+.blog-content .elementor .elementor-button-icon::before {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+.blog-content .elementor .elementor-button-icon::after {
+  transform: translate(var(--tx-in), var(--ty-in));
+  opacity: 0;
+}
+.blog-content
+  .elementor
+  .elementor-button:hover
+  .elementor-button-icon::before {
+  transform: translate(var(--tx-out), var(--ty-out));
+  opacity: 0;
+}
+.blog-content .elementor .elementor-button:hover .elementor-button-icon::after {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .blog-content .elementor {
+    padding: 24px;
+    border-radius: 13px;
+  }
+  .blog-content .elementor > .e-con {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  /* Image column is the second child in HTML — surface it on top for mobile */
+  .blog-content .elementor > .e-con > .e-con:last-child {
+    order: -1;
+  }
+  .blog-content .elementor .elementor-widget-image img {
+    max-width: 100%;
+  }
+}
+
+/* ── BookingForm: time slots row ── */
+.slots-row {
+  scrollbar-width: thin;
+  scrollbar-color: #b9a6f0 var(--scrollbar-track);
+}
+.slots-row::-webkit-scrollbar {
+  height: 3px;
+}
+.slots-row::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+.slots-row::-webkit-scrollbar-thumb {
+  background: #b9a6f0;
+  border-radius: 999px;
+}
+.slots-row::-webkit-scrollbar-thumb:hover {
+  background: #5b2dce;
+}
+
+/* ── BookingForm: services list ── */
+.services-list {
+  scrollbar-width: thin;
+  scrollbar-color: #b9a6f0 var(--scrollbar-track);
+}
+.services-list::-webkit-scrollbar {
+  width: 3px;
+}
+.services-list::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+.services-list::-webkit-scrollbar-thumb {
+  background: #b9a6f0;
+  border-radius: 999px;
+}
+.services-list::-webkit-scrollbar-thumb:hover {
+  background: #5b2dce;
+}
+
+/* ── Table of contents (blog posts, legal pages) ──
+   A quiet 4px bar: a faint grey thumb on no track, so it doesn't compete
+   with the list. The page's scrollbar-color (on <html>) is inherited, and
+   while it is set Chrome ignores the ::-webkit-scrollbar rules — hence the
+   reset to auto. Firefox has no ::-webkit-scrollbar, so it gets the
+   standard properties instead. */
+/* The legal pages' wide tables use the same class, so their sideways bar
+   matches — `height` sizes it there. */
+.toc-scroll {
+  scrollbar-color: auto;
+}
+.toc-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.toc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.toc-scroll::-webkit-scrollbar-thumb {
+  background: rgb(10 5 22 / 0.14);
+  border-radius: 999px;
+}
+.toc-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(10 5 22 / 0.28);
+}
+@supports not selector(::-webkit-scrollbar) {
+  .toc-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(10 5 22 / 0.18) transparent;
+  }
+}
+
+/* Blog tables scroll sideways instead of wrapping: no cell or heading breaks. */
+.blog-theme table :is(th, td) {
+  white-space: nowrap;
+}
+
+/* Eager reveal — FeatureReveal's `eager` RevealGroup, used for each page's
+   opening section. The same motion as its framer-motion "stagger" variants
+   (34px rise, 96% scale, 8px blur over 0.9s; 40px / 94% over 1.05s for
+   media; 0.08s between items), but as a CSS animation, so it plays from the
+   first paint instead of after hydration. An item's place in the stagger is
+   its position among its siblings. */
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.96);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes reveal-rise-media {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reveal-rise-simple {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reveal-eager,
+.reveal-eager-media {
+  --reveal-i: 0;
+  animation: reveal-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(
+    var(--reveal-delay, 0s) + var(--reveal-i) * var(--reveal-step, 0.08s)
+  );
+}
+.reveal-eager-media {
+  animation-name: reveal-rise-media;
+  animation-duration: 1.05s;
+}
+:is(.reveal-eager, .reveal-eager-media):nth-child(2) { --reveal-i: 1; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(3) { --reveal-i: 2; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(4) { --reveal-i: 3; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(5) { --reveal-i: 4; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(6) { --reveal-i: 5; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(7) { --reveal-i: 6; }
+:is(.reveal-eager, .reveal-eager-media):nth-child(n + 8) { --reveal-i: 7; }
+.reveal-eager-simple {
+  animation: reveal-rise-simple 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-eager,
+  .reveal-eager-media,
+  .reveal-eager-simple {
+    animation: none;
+  }
+}
