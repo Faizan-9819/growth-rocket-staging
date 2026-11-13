@@ -24,10 +24,14 @@ export default function OfferCard({
   offer,
   locale,
   tone = "light",
+  tallImage = false,
 }: {
   offer: Offer;
   locale: OfferLocale;
   tone?: "light" | "dark";
+  /** Light tone only: a taller image box (the dark card's 1.28:1 ratio)
+   *  instead of the listing's short fixed-height strip, so less is cropped. */
+  tallImage?: boolean;
 }) {
   const copy = offer[locale];
   const ui = OFFER_UI[locale];
@@ -82,7 +86,11 @@ export default function OfferCard({
       href={href}
       className="arrow-cta-host group flex h-full translate-y-0 flex-col overflow-hidden rounded-[13px] border border-[#ded8e7] bg-[#f5f3ff] transition-[background-color,border-color,translate,box-shadow] duration-380 ease-in-out hover:-translate-y-1 hover:border-[#c9bff0] hover:bg-[#ebe6ff] hover:shadow-[0_22px_46px_rgba(10,5,22,0.14)] hover:duration-300 hover:ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-[background-color,border-color] motion-reduce:hover:translate-y-0"
     >
-      <div className="relative h-[180px] overflow-hidden bg-[#ece7f6] lg:h-[218px]">
+      <div
+        className={`relative overflow-hidden bg-[#ece7f6] ${
+          tallImage ? "aspect-[1.28/1]" : "h-[180px] lg:h-[218px]"
+        }`}
+      >
         <Image
           src={offer.image}
           alt={copy.imageAlt}

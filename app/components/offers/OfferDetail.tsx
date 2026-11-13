@@ -3,8 +3,9 @@ import Link from "next/link";
 import HomeShell from "../sections/home2/HomeShell";
 import ButtonF from "../ui/ButtonF";
 import JsonLd from "../JsonLd";
-import BlogToc from "../../../components/blogs/shared/BlogToc";
-import BlogProse from "../../../components/blogs/shared/BlogProse";
+// Body section is commented out below — re-enable these with it.
+// import BlogToc from "../../../components/blogs/shared/BlogToc";
+// import BlogProse from "../../../components/blogs/shared/BlogProse";
 import OfferCard from "./OfferCard";
 import OfferEnquiryCard from "./OfferEnquiryCard";
 import { buildPageSchema } from "../../lib/seo";
@@ -18,9 +19,10 @@ import {
   type OfferLocale,
 } from "../../lib/offers";
 
-/** BlogToc and BlogProse render their labels as HTML, so plain text is escaped. */
-const escapeHtml = (text: string) =>
-  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+/** BlogToc and BlogProse render their labels as HTML, so plain text is escaped.
+ *  (Unused while the body section is commented out.) */
+// const escapeHtml = (text: string) =>
+//   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /**
  * One offer — the same three-fold skeleton as BlogPostView:
@@ -43,81 +45,104 @@ export default function OfferDetail({
   const ui = OFFER_UI[locale];
   const listingHref = OFFERS_BASE[locale];
   const others = getOtherOffers(offer.slug, 3);
-  const tocEntries = copy.sections.map(({ id, heading }) => ({
-    id,
-    label: escapeHtml(heading),
-  }));
+  // const tocEntries = copy.sections.map(({ id, heading }) => ({
+  //   id,
+  //   label: escapeHtml(heading),
+  // }));
 
   return (
     <main className="blog-theme relative min-h-screen overflow-x-clip text-[#0a0516]">
       <JsonLd
-        data={buildPageSchema(offerHref(offer, locale), copy.seoTitle, copy.seoDescription)}
+        data={buildPageSchema(
+          offerHref(offer, locale),
+          copy.seoTitle,
+          copy.seoDescription,
+        )}
       />
 
       <HomeShell>
-        {/* 1 — Hero */}
-        <section className="overflow-hidden rounded-[13px] bg-[#0a0516] py-[48px] text-white md:py-[64px]">
+        {/* 1 — Hero: content column (breadcrumb → image) · sticky enquiry
+            card from the breadcrumb's line down. overflow-clip, not hidden:
+            overflow-hidden would make the section a scroll container and
+            break the card's position: sticky. No items-start on the row: the
+            card's column stretches to the hero's height so it can stick. */}
+        <section className="overflow-clip rounded-[13px] bg-[#0a0516] py-[48px] text-white md:py-[64px]">
           <div className="fix">
-            <nav aria-label={ui.breadcrumbLabel}>
-              <ol className="m-0 flex list-none items-center gap-[8px] p-0 font-sans text-[13px] text-[#c9c2d4]">
-                <li className="flex-none">
-                  <Link href={listingHref} className="transition-colors hover:text-white">
-                    {ui.breadcrumbRoot}
-                  </Link>
-                </li>
-                <li aria-hidden className="flex-none">
-                  /
-                </li>
-                <li aria-current="page" className="line-clamp-1 min-w-0 text-white/90">
+            <div className="flex flex-col gap-[36px] lg:flex-row lg:gap-[32px] xl:gap-[40px]">
+              <div className="min-w-0 flex-1">
+                <nav aria-label={ui.breadcrumbLabel}>
+                  <ol className="m-0 flex list-none items-center gap-[8px] p-0 font-sans text-[13px] text-[#c9c2d4]">
+                    <li className="flex-none">
+                      <Link
+                        href={listingHref}
+                        className="transition-colors hover:text-white"
+                      >
+                        {ui.breadcrumbRoot}
+                      </Link>
+                    </li>
+                    <li aria-hidden className="flex-none">
+                      /
+                    </li>
+                    <li
+                      aria-current="page"
+                      className="line-clamp-1 min-w-0 text-white/90"
+                    >
+                      {copy.title}
+                    </li>
+                  </ol>
+                </nav>
+
+                <p className="m-0 mt-[22px] flex items-center gap-[10px] font-sans text-[11px] font-semibold tracking-[0.12em] text-[#e4fa65] uppercase">
+                  <i className="h-[7px] w-[7px] rounded-full bg-[#e4fa65]" />
+                  {copy.badge}
+                </p>
+
+                <h1 className="m-0 mt-[18px] max-w-[900px] font-bricolage text-[clamp(38px,4.3vw,64px)] font-semibold leading-[1.04] tracking-[-0.055em] text-white">
                   {copy.title}
-                </li>
-              </ol>
-            </nav>
+                </h1>
 
-            <p className="m-0 mt-[22px] flex items-center gap-[10px] font-sans text-[11px] font-semibold tracking-[0.12em] text-[#e4fa65] uppercase">
-              <i className="h-[7px] w-[7px] rounded-full bg-[#e4fa65]" />
-              {copy.badge}
-            </p>
+                <p className="m-0 mt-[18px] max-w-[680px] font-sans text-[clamp(15px,1.25vw,18px)] leading-[1.6] text-[#c9c2d4]">
+                  {copy.excerpt}
+                </p>
 
-            <h1 className="m-0 mt-[18px] max-w-[900px] font-bricolage text-[clamp(38px,4.3vw,64px)] font-semibold leading-[1.04] tracking-[-0.055em] text-white">
-              {copy.title}
-            </h1>
+                <div className="mt-[26px] flex flex-wrap items-center gap-[14px]">
+                  <ButtonF
+                    href="#offer-enquiry"
+                    native
+                    variant="lime"
+                    size="sm"
+                    arrow="down-right"
+                  >
+                    {ui.heroCta}
+                  </ButtonF>
+                  <span className="rounded-full border border-white/[0.18] px-[14px] py-[8px] font-sans text-[13px] text-[#c9c2d4]">
+                    {ui.validUntil(
+                      formatOfferDate(offer.validUntil, locale, "long"),
+                    )}
+                  </span>
+                </div>
 
-            <p className="m-0 mt-[18px] max-w-[680px] font-sans text-[clamp(15px,1.25vw,18px)] leading-[1.6] text-[#c9c2d4]">
-              {copy.excerpt}
-            </p>
+                <div className="relative mt-[36px] aspect-[4/3] overflow-hidden rounded-[13px] bg-[#151021] sm:aspect-[16/9] md:mt-[44px]">
+                  <Image
+                    src={offer.image}
+                    alt={copy.imageAlt}
+                    fill
+                    sizes="(min-width: 1440px) 940px, (min-width: 1024px) 65vw, 90vw"
+                    className="object-cover"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                </div>
+              </div>
 
-            <div className="mt-[26px] flex flex-wrap items-center gap-[14px]">
-              <ButtonF
-                href="#offer-enquiry"
-                native
-                variant="lime"
-                size="sm"
-                arrow="down-right"
-              >
-                {ui.heroCta}
-              </ButtonF>
-              <span className="rounded-full border border-white/[0.18] px-[14px] py-[8px] font-sans text-[13px] text-[#c9c2d4]">
-                {ui.validUntil(formatOfferDate(offer.validUntil, locale, "long"))}
-              </span>
-            </div>
-
-            <div className="relative mt-[36px] aspect-[4/3] overflow-hidden rounded-[13px] bg-[#151021] sm:aspect-[16/9] md:mt-[44px] lg:aspect-[21/9]">
-              <Image
-                src={offer.image}
-                alt={copy.imageAlt}
-                fill
-                sizes="(min-width: 1440px) 1320px, 90vw"
-                className="object-cover"
-                loading="eager"
-                fetchPriority="high"
-              />
+              <OfferEnquiryCard offer={offer} locale={locale} />
             </div>
           </div>
         </section>
 
-        {/* 2 — Body. No items-start: the side columns stretch to the row's
-            height so their sticky content has room to stick. */}
+        {/* 2 — Body (TOC · article · enquiry card) — hidden for now; the
+            enquiry card moved into the hero above. Restore by uncommenting
+            this block and the BlogToc / BlogProse / tocEntries bits at the top.
         <section className="rounded-[13px] bg-white py-[48px] md:py-[64px]">
           <div className="fix">
             <div className="flex flex-col gap-[40px] lg:flex-row xl:gap-[48px]">
@@ -168,15 +193,25 @@ export default function OfferDetail({
                   </ButtonF>
                 </div>
               </article>
-
-              <OfferEnquiryCard offer={offer} locale={locale} />
             </div>
           </div>
         </section>
+        */}
 
-        {/* 3 — More offers, on the deep fold (BlogPostView's "More articles"). */}
-        <section className="overflow-hidden rounded-[13px] bg-[#0a0516] py-[56px] text-white md:py-[80px]">
-          <div className="fix">
+        {/* 3 — More offers. Brand-violet fold (the enquiry card header's
+            #5b2dce) so it stands apart from the deep hero: white heading,
+            lime accents, light cards, lime button. */}
+        <section className="relative overflow-hidden rounded-[13px] bg-[#5b2dce] py-[56px] text-white md:py-[80px]">
+          {/* Soft glows for depth on the flat violet. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-[180px] -right-[120px] h-[420px] w-[420px] rounded-full bg-[#8b5cf6] opacity-40 blur-[120px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-[200px] -left-[140px] h-[420px] w-[420px] rounded-full bg-[#3b1a96] opacity-60 blur-[120px]"
+          />
+          <div className="fix relative">
             <div className="mb-[36px] flex flex-col gap-[22px] sm:flex-row sm:items-end sm:justify-between sm:gap-[30px]">
               <div>
                 <p className="m-0 flex items-center gap-[10px] font-sans text-[11px] font-semibold tracking-[0.12em] text-[#e4fa65] uppercase">
@@ -192,7 +227,7 @@ export default function OfferDetail({
 
               <ButtonF
                 href={listingHref}
-                variant="violet"
+                variant="lime"
                 size="sm"
                 className="w-max self-start sm:self-end"
               >
@@ -202,7 +237,13 @@ export default function OfferDetail({
 
             <div className="grid gap-[18px] sm:grid-cols-2 lg:grid-cols-3">
               {others.map((other) => (
-                <OfferCard key={other.slug} offer={other} locale={locale} tone="dark" />
+                <OfferCard
+                  key={other.slug}
+                  offer={other}
+                  locale={locale}
+                  tone="light"
+                  tallImage
+                />
               ))}
             </div>
           </div>

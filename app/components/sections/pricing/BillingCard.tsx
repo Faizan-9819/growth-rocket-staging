@@ -86,7 +86,7 @@ const COPY: Record<
         saving: "Je bespaart €338 ten opzichte van 12 maandbetalingen.",
         offer: "Alleen voor de eerste 100 klanten",
         terms:
-          "€490 per jaar voor je eerste twee jaar, daarna €690 per jaar vanaf het derde jaar. Jaarlijks gefactureerd. Alle prijzen zijn exclusief btw.",
+          "€490 per jaar voor je eerste twee jaar, daarna €690 per jaar vanaf het derde jaar. Jaarlijks betaald. Alle prijzen zijn exclusief btw.",
       },
       monthly: {
         old: "€99",

@@ -13,8 +13,10 @@ import {
 /**
  * The enquiry card beside an offer — the "Let's connect" modal's shape
  * (LeadForm): a violet header bar over a form that scrolls on its own, its
- * submit button pinned to the bottom. Sticky from lg; on smaller screens it
- * follows the article and the hero's CTA jumps to it (#offer-enquiry).
+ * submit button pinned to the bottom. It sits in the hero's right column,
+ * starting level with the breadcrumb, and is sticky from lg while the hero
+ * scrolls; on smaller screens it stacks under the image and the hero's CTA
+ * jumps to it (#offer-enquiry).
  *
  * The message sent is prefixed with the offer's title and URL so the team can
  * see where the enquiry came from.
@@ -33,9 +35,9 @@ export default function OfferEnquiryCard({
   return (
     <aside
       id="offer-enquiry"
-      className="w-full scroll-mt-[104px] lg:w-[320px] lg:flex-none xl:w-[340px]"
+      className="w-full scroll-mt-[104px] lg:w-[360px] lg:flex-none xl:w-[380px]"
     >
-      <div className="flex flex-col overflow-hidden rounded-[13px] border border-[#ded8e7] bg-white shadow-[0_22px_46px_rgba(10,5,22,0.10)] lg:sticky lg:top-[104px] lg:max-h-[calc(100vh-128px)]">
+      <div className="flex flex-col overflow-hidden rounded-[13px] border border-white/[0.12] bg-white shadow-[0_22px_46px_rgba(0,0,0,0.35)] lg:sticky lg:top-[104px] lg:max-h-[calc(100vh-128px)]">
         <div className="shrink-0 bg-[#5b2dce] px-[22px] py-[18px]">
           <h2 className="m-0 font-bricolage text-[22px] font-semibold leading-[1.15] tracking-[-0.03em] text-white">
             {ui.enquiryHeading}

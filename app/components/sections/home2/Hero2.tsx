@@ -49,7 +49,7 @@ const HERO_COPY: Record<
     start: "Get Growth Rocket",
     link: "See what’s included",
     audience: "Built for small businesses",
-    price: "€69/month or",
+    price: "",
     priceWas: "€690",
     priceNow: "€490/year",
     offer: "Launch price for the first 100 customers only",
@@ -77,7 +77,7 @@ const HERO_COPY: Record<
     start: "Start met Growth Rocket",
     link: "Bekijk wat je krijgt",
     audience: "Voor kleine bedrijven",
-    price: "€69/maand of",
+    price: "",
     priceWas: "€690",
     priceNow: "€490/jaar",
     offer: "Introductieprijs alleen voor de eerste 100 klanten",
@@ -285,9 +285,7 @@ export default function Hero2({ onStartClick }: { onStartClick?: () => void }) {
                     {copy.priceWas}
                   </s>{" "}
                   <span className="text-[#e4fa65]">{copy.priceNow}</span>{" "}
-                  <span className="font-normal text-[#c9c2d4]">
-                    {copy.fee}
-                  </span>
+                  <span className="font-normal text-[#c9c2d4]">{copy.fee}</span>
                   <span className="mt-[2px] block text-[13px] font-medium text-[#e4fa65]">
                     {copy.offer}
                   </span>
