@@ -14,6 +14,8 @@ import JsonLd from "./components/JsonLd";
 import LenisProvider from "./components/LenisProvider";
 import StickyActions from "./components/StickyActions";
 import WidowGuard from "./components/WidowGuard";
+import CurrencyProvider from "./components/CurrencyProvider";
+import { getEurRates } from "./lib/fx-rates";
 import Navbar from "./components/Navbar";
 import SiteFooter from "./components/SiteFooter";
 import { LanguageProvider } from "./i18n/LanguageProvider";
@@ -82,12 +84,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const initialLocale = DEFAULT_LOCALE;
+  // For showing prices in the visitor's currency (lib/currency).
+  const rates = await getEurRates();
 
   return (
     <html
@@ -101,13 +105,15 @@ export default function RootLayout({
         <JsonLd data={buildWebsiteSchema()} />
         <JsonLd data={buildOrganizationSchema()} />
         <LanguageProvider initialLocale={initialLocale}>
-          <LenisProvider>
-            <Navbar />
-            {children}
-            <SiteFooter />
-            <StickyActions />
-            <CookieConsent />
-          </LenisProvider>
+          <CurrencyProvider rates={rates}>
+            <LenisProvider>
+              <Navbar />
+              {children}
+              <SiteFooter />
+              <StickyActions />
+              <CookieConsent />
+            </LenisProvider>
+          </CurrencyProvider>
         </LanguageProvider>
         <Analytics gtmId={GTM_ID} gaId={GA_ID} gadsId={GADS_ID} />
         {/* Vercel Web Analytics: cookieless page views, served from

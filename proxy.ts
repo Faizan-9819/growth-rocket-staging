@@ -8,6 +8,11 @@ import {
   MAIN_ORIGIN,
   isLegalPath,
 } from "./app/lib/legal";
+import {
+  COUNTRY_OVERRIDE_COOKIE,
+  CURRENCY_COOKIE,
+  currencyForCountry,
+} from "./app/lib/currency";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
 const NL_PREFIX = "/nl";
@@ -85,7 +90,7 @@ function parseAcceptLanguage(header: string | null): "en" | "nl" | null {
   return null;
 }
 
-export function proxy(request: NextRequest) {
+function route(request: NextRequest): NextResponse {
   const { pathname, search } = request.nextUrl;
 
   const hostRoute = routeByHost(request);
@@ -165,6 +170,47 @@ export function proxy(request: NextRequest) {
       sameSite: "lax",
     });
   }
+  return response;
+}
+
+const ONE_DAY = 60 * 60 * 24;
+
+/**
+ * Stores the visitor's pricing currency (lib/currency) from their IP country,
+ * or from `?country=XX` when testing (`?country=auto` drops it again).
+ */
+function setCurrency(request: NextRequest, response: NextResponse) {
+  const param = request.nextUrl.searchParams
+    .get("country")
+    ?.trim()
+    .toUpperCase();
+  let override = request.cookies.get(COUNTRY_OVERRIDE_COOKIE)?.value;
+  if (param === "AUTO") {
+    response.cookies.delete(COUNTRY_OVERRIDE_COOKIE);
+    override = undefined;
+  } else if (param && /^[A-Z]{2}$/.test(param)) {
+    // Session cookie: lasts while testing, gone with the browser.
+    response.cookies.set(COUNTRY_OVERRIDE_COOKIE, param, {
+      path: "/",
+      sameSite: "lax",
+    });
+    override = param;
+  }
+
+  const country = override ?? request.headers.get("x-vercel-ip-country");
+  const currency = country ? currencyForCountry(country) : "EUR";
+  if (request.cookies.get(CURRENCY_COOKIE)?.value !== currency) {
+    response.cookies.set(CURRENCY_COOKIE, currency, {
+      path: "/",
+      maxAge: ONE_DAY,
+      sameSite: "lax",
+    });
+  }
+}
+
+export function proxy(request: NextRequest) {
+  const response = route(request);
+  setCurrency(request, response);
   return response;
 }
 

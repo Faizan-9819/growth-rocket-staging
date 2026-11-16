@@ -1,4 +1,5 @@
 "use client";
+import { useCurrency } from "@/app/components/CurrencyProvider";
 
 import { useState } from "react";
 
@@ -110,7 +111,10 @@ export default function CostSection() {
   const wpMonthly = 15 + 12.5 + (zelf ? 0 : 75);
   const wpAt = (m: number) => 1500 + m * wpMonthly;
   const aboAt = (m: number) => 290 + m * 69;
-  const rate = parseFloat(hourly.replace(",", "."));
+  // The rate is typed in the visitor's currency (its "€" label is converted
+  // for them), and the sums below are in euros, so bring it back to euros.
+  const fx = useCurrency();
+  const rate = parseFloat(hourly.replace(",", ".")) / fx.rate;
   const hasRate = !isNaN(rate) && rate > 0;
   const wpMoneyZelf = 1500 + 540 + 450;
 
