@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* Bricolage Grotesque draws "£" as a looped script glyph that reads oddly in
+   prices (geo pricing shows £ to UK visitors, lib/currency). This face covers
+   only that one character with Inter's plain "£", and sits ahead of Bricolage
+   in every Bricolage stack below. The file only downloads on pages that
+   actually show a £. */
+@font-face {
+  font-family: "GGR Pound";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+00A3;
+}
+
+/* `inline` so .font-bricolage carries this stack itself: as a plain theme
+   variable it shares its name with next/font's --font-bricolage on <html>,
+   which wins, and the "GGR Pound" face above would never apply. */
+@theme inline {
+  --font-bricolage: "GGR Pound", var(--font-bricolage), system-ui, sans-serif;
+}
+
 @theme {
   /* Breakpoints. Tailwind's own sm/md/lg/xl/2xl are unchanged — every other
      page is already written against them — and three names extend the scale
@@ -28,7 +49,6 @@
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-jakarta: var(--font-jakarta), system-ui, sans-serif;
-  --font-bricolage: var(--font-bricolage), system-ui, sans-serif;
   --font-poppins: var(--font-poppins), system-ui, sans-serif;
 
   /* Brand palette (from Figma variables) */
@@ -771,7 +791,7 @@ html.lenis body {
 .blog-theme h3,
 .blog-theme h4,
 .blog-theme h5 {
-  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-family: "GGR Pound", var(--font-bricolage), system-ui, sans-serif;
   font-weight: 600;
 }
 .blog-theme h1,
@@ -793,7 +813,7 @@ html.lenis body {
 .blog-theme h3.font-poppins,
 .blog-theme h4.font-poppins,
 .blog-theme h5.font-poppins {
-  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-family: "GGR Pound", var(--font-bricolage), system-ui, sans-serif;
 }
 
 /* /partner-network: the shared <Button> (used by PartnerNetworkForm) as a
@@ -995,7 +1015,7 @@ html.lenis body {
 
 .blog-content .elementor .elementor-widget-heading h3 {
   margin: 0;
-  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-family: "GGR Pound", var(--font-bricolage), system-ui, sans-serif;
   font-size: clamp(18px, 2.4vw, 22px);
   font-weight: 600;
   line-height: 1.25;
