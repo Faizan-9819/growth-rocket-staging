@@ -1,4 +1,5 @@
 "use client";
+import { EUR_EN } from "@/pricing";
 
 import { Fragment } from "react";
 import ButtonF from "@/app/components/ui/ButtonF";
@@ -260,7 +261,7 @@ export function RoutesSection() {
           routeLabel="Route 3"
           title="Done-For-You (managed subscription)"
           stats={[
-            { label: "Cost", value: "€690 / year" },
+            { label: "Cost", value: `${EUR_EN.yearly} / year` },
             { label: "Time to launch", value: "5–10 days" },
             { label: "Effort from you", value: "Low" },
           ]}
@@ -271,7 +272,7 @@ export function RoutesSection() {
             },
             {
               label: "Cost",
-              body: "€690 per year (€69 per month), plus a €290 one-time onboarding fee. No separate bills for hosting, domain, or maintenance.",
+              body: `${EUR_EN.yearlyAndMonthly}, plus a ${EUR_EN.onboarding} one-time onboarding fee. No separate bills for hosting, domain, or maintenance.`,
             },
             {
               label: "Time to launch",

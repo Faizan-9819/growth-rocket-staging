@@ -4,6 +4,7 @@ import ButtonF from "../../ui/ButtonF";
 import { RevealGroup, RevealItem } from "../../../features/FeatureReveal";
 import { useLanguage } from "../../../i18n/LanguageProvider";
 import { localizedHref } from "../../../i18n/locale-href";
+import { usePriceView } from "../../CurrencyProvider";
 
 /**
  * Pricing teaser — a straight port of `section.pricing-teaser-section` from
@@ -19,9 +20,14 @@ import { localizedHref } from "../../../i18n/locale-href";
  * The one departure is the CTA: instead of the source's `.button` with a text
  * `↗`, it is the shared lime ButtonF so it hovers exactly like every other
  * call to action on home2 — lime pill, white on hover.
+ *
+ * Prices come from /pricing, in the visitor's currency. The launch offer
+ * (struck-through yearly price, offer price, "first 100 customers") shows
+ * only where the currency has one; otherwise the yearly price stands alone.
  */
 export default function PricingTeaser() {
   const { t, locale } = useLanguage();
+  const view = usePriceView(locale);
 
   return (
     <section
@@ -70,15 +76,17 @@ export default function PricingTeaser() {
 
         {/* Yearly list price, struck through: the launch price below
             replaces it for the first 100 customers. */}
-        <RevealItem className="col-span-full mt-[6px]">
-          <s className="font-bricolage text-[24px] leading-none font-semibold tracking-[-0.02em] text-[#c9c2d4] decoration-[2px] min-[761px]:text-[28px]">
-            €690
-          </s>
-        </RevealItem>
+        {view.hasOffer ? (
+          <RevealItem className="col-span-full mt-[6px]">
+            <s className="font-bricolage text-[24px] leading-none font-semibold tracking-[-0.02em] text-[#c9c2d4] decoration-[2px] min-[761px]:text-[28px]">
+              {view.yearly}
+            </s>
+          </RevealItem>
+        ) : null}
 
-        <RevealItem>
+        <RevealItem className={view.hasOffer ? undefined : "mt-[6px]"}>
           <strong className="font-bricolage text-[66px] leading-[0.88] font-bold tracking-[-0.025em] text-[#e4fa65] min-[761px]:text-[clamp(58px,5.4vw,86px)]">
-            €490
+            {view.offerYearly ?? view.yearly}
           </strong>
         </RevealItem>
 
@@ -90,12 +98,14 @@ export default function PricingTeaser() {
 
         {/* The offer note and the CTA sit outside the reveal items so they
             are always rendered, never left waiting on the stagger. */}
-        <p className="col-span-full m-0 mt-[6px] font-sans text-[15px] leading-[1.3] font-semibold text-[#e4fa65]">
-          {t({
-            en: "First 100 customers only",
-            nl: "Alleen voor de eerste 100 klanten",
-          })}
-        </p>
+        {view.offerCustomers ? (
+          <p className="col-span-full m-0 mt-[6px] font-sans text-[15px] leading-[1.3] font-semibold text-[#e4fa65]">
+            {t({
+              en: `First ${view.offerCustomers} customers only`,
+              nl: `Alleen voor de eerste ${view.offerCustomers} klanten`,
+            })}
+          </p>
+        ) : null}
 
         <div className="col-span-full w-full min-[761px]:w-auto">
           <ButtonF

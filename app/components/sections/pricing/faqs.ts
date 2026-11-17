@@ -9,17 +9,28 @@
  * gave the route a proxy object, and `PRICING_FAQS.map` was not a function. The
  * data has no directive of its own, so both the fold and the route's FAQPage
  * JSON-LD can read the same source.
+ *
+ * Prices come from /pricing through EUR_EN / EUR_NL (see pricing/README.md), so the
+ * euro text here follows pricing/eur.ts and visitors shown another currency
+ * see their own prices.
  */
-export type PricingFaq = { q: string; a: string };
+import { EUR_EN, EUR_NL } from "@/pricing";
+
+export type PricingFaq = {
+  q: string;
+  a: string;
+  /** Only about monthly billing: left out for a currency without it. */
+  monthlyOnly?: boolean;
+};
 
 export const PRICING_FAQS: PricingFaq[] = [
   {
     q: "How much does Growth Rocket cost?",
-    a: "Growth Rocket costs €69 per month, or €690 per year with annual billing, plus a one-time €290 onboarding fee. Prices exclude VAT. Annual billing works out at €57.50 per month and saves €138 compared with 12 monthly payments. Both options include your website, Growth Rocket Hub, hosting, SSL, maintenance, updates and support. Bespoke plans are available for additional pages or custom functionality.",
+    a: `Growth Rocket costs ${EUR_EN.monthlyOrYearlyAnnualBilling}, plus a one-time ${EUR_EN.onboarding} onboarding fee. Prices exclude VAT.${EUR_EN.annualWorksOutSentence} ${EUR_EN.bothOptionsInclude} your website, Growth Rocket Hub, hosting, SSL, maintenance, updates and support. Bespoke plans are available for additional pages or custom functionality.`,
   },
   {
     q: "What does the onboarding fee cover?",
-    a: "The €290 one-time onboarding fee covers the initial setup of your Growth Rocket package. It is charged in addition to your monthly or annual subscription and is not a recurring fee. The amount excludes VAT.",
+    a: `The ${EUR_EN.onboarding} one-time onboarding fee covers the initial setup of your Growth Rocket package. It is charged in addition to ${EUR_EN.subscriptionKinds} and is not a recurring fee. The amount excludes VAT.`,
   },
   {
     q: "What is included in the Growth Rocket package?",
@@ -27,7 +38,7 @@ export const PRICING_FAQS: PricingFaq[] = [
   },
   {
     q: "Are hosting, maintenance and business tools billed separately?",
-    a: "Your website, Growth Rocket Hub, hosting, SSL, technical maintenance, updates and support come together in one package. You pay €69 per month or €690 per year, plus a €290 one-time onboarding fee, excluding VAT. There are no separate subscription charges for the included Hub capabilities. If we provide a new domain, its first year is complimentary; renewal is charged at actual cost from year two. Additional pages or custom work are scoped and priced separately.",
+    a: `Your website, Growth Rocket Hub, hosting, SSL, technical maintenance, updates and support come together in one package. You pay ${EUR_EN.monthlyOrYearly}, plus a ${EUR_EN.onboarding} one-time onboarding fee, excluding VAT. There are no separate subscription charges for the included Hub capabilities. If we provide a new domain, its first year is complimentary; renewal is charged at actual cost from year two. Additional pages or custom work are scoped and priced separately.`,
   },
   {
     q: "Who takes care of hosting, SSL and security?",
@@ -51,11 +62,12 @@ export const PRICING_FAQS: PricingFaq[] = [
   },
   {
     q: "Is annual or monthly billing better value?",
-    a: "Annual billing costs €690 per year, which works out at €57.50 per month and saves €138, about 17%, compared with paying €69 per month for 12 months. Monthly billing costs more over a year but spreads payments out. The one-time €290 onboarding fee applies to both options, and both include the same website, Growth Rocket Hub, hosting, maintenance and support. All amounts exclude VAT.",
+    a: `${EUR_EN.annualVersusMonthly} Monthly billing costs more over a year but spreads payments out. The one-time ${EUR_EN.onboarding} onboarding fee applies to both options, and both include the same website, Growth Rocket Hub, hosting, maintenance and support. All amounts exclude VAT.`,
+    monthlyOnly: true,
   },
   {
     q: "Do Growth Rocket prices include VAT?",
-    a: "No. Growth Rocket prices are shown excluding VAT. The package costs €69 per month or €690 per year, plus a one-time €290 onboarding fee, with VAT added on top where it applies. If you have questions about invoicing for your business, contact the sales team at sales@getgrowthrocket.com before you sign up.",
+    a: `No. Growth Rocket prices are shown excluding VAT. The package costs ${EUR_EN.monthlyOrYearly}, plus a one-time ${EUR_EN.onboarding} onboarding fee, with VAT added on top where it applies. If you have questions about invoicing for your business, contact the sales team at sales@getgrowthrocket.com before you sign up.`,
   },
   {
     q: "How do I get started?",
@@ -68,11 +80,11 @@ export const PRICING_FAQS: PricingFaq[] = [
 export const PRICING_FAQS_NL: PricingFaq[] = [
   {
     q: "Wat kost Growth Rocket?",
-    a: "Growth Rocket kost €69 per maand of €690 per jaar bij jaarlijkse betaling, plus €290 eenmalige opstartkosten. Alle bedragen zijn exclusief btw. Bij jaarlijkse betaling komt dat neer op €57,50 per maand en bespaar je €138 ten opzichte van twaalf maandbetalingen. Beide opties omvatten je website, Growth Rocket Hub, hosting, SSL, onderhoud, updates en ondersteuning. Voor extra pagina’s of maatwerkfunctionaliteit is een pakket op maat mogelijk.",
+    a: `Growth Rocket kost ${EUR_NL.monthlyOrYearly} bij jaarlijkse betaling, plus ${EUR_NL.onboarding} eenmalige opstartkosten. Alle bedragen zijn exclusief btw.${EUR_NL.annualWorksOutSentence} ${EUR_NL.bothOptionsInclude} je website, Growth Rocket Hub, hosting, SSL, onderhoud, updates en ondersteuning. Voor extra pagina’s of maatwerkfunctionaliteit is een pakket op maat mogelijk.`,
   },
   {
     q: "Wat valt onder de eenmalige opstartkosten?",
-    a: "De eenmalige opstartkosten van €290 dekken de volledige eerste inrichting van je Growth Rocket-pakket. Je betaalt dit bedrag naast je maand- of jaarabonnement. Het is geen terugkerende vergoeding. Het bedrag is exclusief btw.",
+    a: `De eenmalige opstartkosten van ${EUR_NL.onboarding} dekken de volledige eerste inrichting van je Growth Rocket-pakket. Je betaalt dit bedrag naast ${EUR_NL.subscriptionKinds}. Het is geen terugkerende vergoeding. Het bedrag is exclusief btw.`,
   },
   {
     q: "Wat is inbegrepen in het Growth Rocket-pakket?",
@@ -80,7 +92,7 @@ export const PRICING_FAQS_NL: PricingFaq[] = [
   },
   {
     q: "Betaal ik apart voor hosting, onderhoud en het gebruik van de Hub?",
-    a: "Je website, Growth Rocket Hub, hosting, SSL, technisch onderhoud, updates en ondersteuning zitten samen in één pakket. Je betaalt €69 per maand of €690 per jaar, plus €290 eenmalige opstartkosten, exclusief btw. Voor de inbegrepen mogelijkheden van de Hub betaal je geen aparte abonnementskosten. Leveren wij een nieuw domein, dan is het eerste jaar gratis. Vanaf het tweede jaar betaal je de werkelijke verlengingskosten. Voor extra pagina’s of maatwerk spreken we de inhoud en prijs apart af.",
+    a: `Je website, Growth Rocket Hub, hosting, SSL, technisch onderhoud, updates en ondersteuning zitten samen in één pakket. Je betaalt ${EUR_NL.monthlyOrYearly}, plus ${EUR_NL.onboarding} eenmalige opstartkosten, exclusief btw. Voor de inbegrepen mogelijkheden van de Hub betaal je geen aparte abonnementskosten. Leveren wij een nieuw domein, dan is het eerste jaar gratis. Vanaf het tweede jaar betaal je de werkelijke verlengingskosten. Voor extra pagina’s of maatwerk spreken we de inhoud en prijs apart af.`,
   },
   {
     q: "Wie regelt hosting, SSL en beveiliging?",
@@ -104,11 +116,12 @@ export const PRICING_FAQS_NL: PricingFaq[] = [
   },
   {
     q: "Wat is voordeliger: jaarlijks of maandelijks betalen?",
-    a: "Bij jaarlijkse betaling betaal je €690 per jaar. Dat komt neer op €57,50 per maand en bespaart je €138, ongeveer 17%, ten opzichte van twaalf maandbetalingen van €69. Maandelijks betalen kost over een heel jaar meer, maar spreidt je betalingen. Bij beide opties betaal je €290 eenmalige opstartkosten en krijg je dezelfde website, Growth Rocket Hub, hosting, onderhoud en ondersteuning. Alle bedragen zijn exclusief btw.",
+    a: `${EUR_NL.annualVersusMonthly} Maandelijks betalen kost over een heel jaar meer, maar spreidt je betalingen. Bij beide opties betaal je ${EUR_NL.onboarding} eenmalige opstartkosten en krijg je dezelfde website, Growth Rocket Hub, hosting, onderhoud en ondersteuning. Alle bedragen zijn exclusief btw.`,
+    monthlyOnly: true,
   },
   {
     q: "Zijn de prijzen van Growth Rocket inclusief btw?",
-    a: "Nee. De prijzen van Growth Rocket zijn exclusief btw. Het pakket kost €69 per maand of €690 per jaar, plus €290 eenmalige opstartkosten. Waar van toepassing komt daar btw bij. Heb je vragen over de facturatie voor je bedrijf, neem dan vóór je aanmelding contact op met ons salesteam via sales@getgrowthrocket.com.",
+    a: `Nee. De prijzen van Growth Rocket zijn exclusief btw. Het pakket kost ${EUR_NL.monthlyOrYearly}, plus ${EUR_NL.onboarding} eenmalige opstartkosten. Waar van toepassing komt daar btw bij. Heb je vragen over de facturatie voor je bedrijf, neem dan vóór je aanmelding contact op met ons salesteam via sales@getgrowthrocket.com.`,
   },
   {
     q: "Hoe kan ik beginnen?",

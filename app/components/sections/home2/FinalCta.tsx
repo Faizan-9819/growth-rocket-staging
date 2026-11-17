@@ -1,4 +1,5 @@
 "use client";
+import { EUR_EN, EUR_NL } from "@/pricing";
 import Reveal from "../../Reveal";
 import ButtonF from "../../ui/ButtonF";
 import { useLanguage } from "../../../i18n/LanguageProvider";
@@ -37,8 +38,8 @@ export default function FinalCta({
       <Reveal delay={0.05}>
         <p className="relative m-0 text-[19px] font-poppins font-medium text-white/85">
           {t({
-            en: "Growth Rocket from €69 per month.",
-            nl: "Growth Rocket vanaf €69 per maand.",
+            en: `Growth Rocket from ${EUR_EN.perPeriod}.`,
+            nl: `Growth Rocket vanaf ${EUR_NL.perPeriod}.`,
           })}
         </p>
       </Reveal>

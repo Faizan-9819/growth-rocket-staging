@@ -8,6 +8,7 @@ import { FEATURE_ICON_PATHS, type FeatureIconName } from "../featureIcons";
 import { useLanguage } from "../../../i18n/LanguageProvider";
 import type { Translation } from "../../../i18n/config";
 import { localizedHref } from "../../../i18n/locale-href";
+import { usePriceView } from "../../CurrencyProvider";
 
 /* `h-full` is what keeps the two cards the same height now that each one sits
    inside a RevealItem: the grid stretches that wrapper, not the <article>, so
@@ -278,6 +279,7 @@ function OfferCard({
 
 export default function Solution() {
   const { t, locale } = useLanguage();
+  const view = usePriceView(locale);
   //
   return (
     <section
@@ -436,23 +438,29 @@ export default function Solution() {
           </RevealItem>
 
           <RevealItem className="mt-[25px] flex flex-wrap items-start justify-between gap-[18px] md:mt-0 md:flex-col md:flex-nowrap md:items-end md:justify-start md:gap-[14px] lg:flex-row lg:items-center lg:gap-6">
-            {/* The yearly list price (€690) is struck through; €490 is the
-                launch price for the first 100 customers, noted under it. */}
+            {/* The yearly list price is struck through; the launch price
+                (first 100 customers) is noted under it. Prices come from
+                /pricing in the visitor's currency; without a launch offer the
+                yearly price stands alone. */}
             <p className="m-0 font-sans text-[14px] leading-[1.3] whitespace-nowrap">
               <span className="block">{t({ en: "From ", nl: "Vanaf " })}</span>
-              <s className="mr-[6px] font-bricolage text-[18px] font-medium text-[#625a70] md:text-[24px]">
-                €690
-              </s>
+              {view.hasOffer ? (
+                <s className="mr-[6px] font-bricolage text-[18px] font-medium text-[#625a70] md:text-[24px]">
+                  {view.yearly}
+                </s>
+              ) : null}
               <strong className="font-bricolage text-[28px] font-semibold tracking-[-0.05em] md:text-[42px]">
-                €490
+                {view.offerYearly ?? view.yearly}
               </strong>
               <span>{t({ en: " / year", nl: " / jaar" })}</span>
-              <span className="block text-[14px] font-semibold text-[#5b2dce] md:text-[15px]">
-                {t({
-                  en: "First 100 customers only",
-                  nl: "Alleen voor de eerste 100 klanten",
-                })}
-              </span>
+              {view.offerCustomers ? (
+                <span className="block text-[14px] font-semibold text-[#5b2dce] md:text-[15px]">
+                  {t({
+                    en: `First ${view.offerCustomers} customers only`,
+                    nl: `Alleen voor de eerste ${view.offerCustomers} klanten`,
+                  })}
+                </span>
+              ) : null}
             </p>
 
             {/* Same CTA behaviour as every other call to action on the page

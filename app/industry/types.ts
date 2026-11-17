@@ -71,8 +71,11 @@ export type IndustryCopy = {
       eyebrow: string;
       heading: string;
       priceLead: string;
+      /** "{monthly}" — or the yearly price, without monthly billing. */
       price: string;
       pricePeriod: string;
+      /** The period after the yearly price, without monthly billing. */
+      pricePeriodYearly: string;
       cta: Link;
     };
   };
@@ -103,6 +106,8 @@ export type IndustryCopy = {
     smallLink: Link;
     cta: { label: string };
   };
+  /* Price lines hold "{token}" placeholders from /pricing (pricing/view.ts),
+     filled in the visitor's currency by IndustryBillingCard. */
   BILLING: Record<
     "annual" | "monthly",
     {
@@ -118,6 +123,8 @@ export type IndustryCopy = {
     annually: string;
     saveBadge: string;
     monthly: string;
+    /** The annual detail line for a currency without per-month figures. */
+    billedAnnually: string;
   };
   SETUP_FEE: { amount: string; label: string };
   DESIGNS: {
@@ -151,8 +158,11 @@ export type IndustryCopy = {
     introLead: string;
     introStrong: string;
     priceLabel: string;
+    /** "{monthly}" — or the yearly price, without monthly billing. */
     price: string;
     pricePeriod: string;
+    /** The period after the yearly price, without monthly billing. */
+    pricePeriodYearly: string;
     cta: Link;
   };
   FAQ: { heading: string; headingAccent: string; intro: string };

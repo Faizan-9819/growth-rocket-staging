@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { Metadata } from "next";
 import { socialMeta } from "./lib/seo";
 import Home2Client from "./home2/Home2Client";
@@ -9,7 +10,7 @@ import { getHomeBlogPosts } from "./lib/blog-posts";
    "simple"  — the original fade + 24px rise, whole blocks at once. */
 const animationStyle: AnimationStyle = "stagger";
 
-const TITLE = "Small Business Website & Business Tools – From €69/Month";
+const TITLE = `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`;
 const DESCRIPTION =
   "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.";
 

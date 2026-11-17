@@ -5,9 +5,11 @@ import SectionCard from "./SectionCard";
 import ButtonF from "../components/ui/ButtonF";
 import { useLanguage } from "../i18n/LanguageProvider";
 import { localizedHref } from "../i18n/locale-href";
+import { usePriceView } from "../components/CurrencyProvider";
 
 export default function FeaturesCta() {
   const { t, locale } = useLanguage();
+  const price = usePriceView(locale);
 
   return (
     <SectionCard
@@ -45,11 +47,15 @@ export default function FeaturesCta() {
               {t({ en: "From", nl: "Vanaf" })}
             </span>
             <div className="mt-[4px] flex items-end gap-[7px]">
+              {/* /pricing, in the visitor's currency: the monthly price,
+                  or the yearly one where there is no monthly billing. */}
               <strong className="font-sans text-[clamp(54px,5vw,72px)] leading-[0.78] font-extrabold tracking-[-0.07em] text-[#5b2dce]">
-                €69
+                {price.monthly ?? price.yearly}
               </strong>
               <small className="pb-[4px] font-sans text-[14px] leading-none font-bold whitespace-nowrap">
-                {t({ en: "/ month", nl: "/ maand" })}
+                {price.monthly
+                  ? t({ en: "/ month", nl: "/ maand" })
+                  : t({ en: "/ year", nl: "/ jaar" })}
               </small>
             </div>
             {/* The Features page's `.button`: the `lg` pill at 15px with a

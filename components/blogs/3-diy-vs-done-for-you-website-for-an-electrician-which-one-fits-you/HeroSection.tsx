@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import ButtonF from "@/app/components/ui/ButtonF";
 
 const BRIEF_ITEMS = [
@@ -23,7 +24,7 @@ const BRIEF_ITEMS = [
   },
   {
     title: "Done-For-You",
-    detail: "€690 per year · everything handled",
+    detail: `${EUR_EN.yearly} per year · everything handled`,
     icon: (
       <>
         <path d="M12 2l8 3.5v5.5c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5V5.5z" />

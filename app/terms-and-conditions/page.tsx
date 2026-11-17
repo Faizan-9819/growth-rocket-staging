@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "../components/JsonLd";
@@ -62,7 +63,17 @@ function B({ children }: { children: React.ReactNode }) {
   return <strong className="font-semibold text-[#0a0516]">{children}</strong>;
 }
 
-function Table({ head, rows }: { head: string[]; rows: string[][] }) {
+/* `monthlyOnly`: rows (by their first cell) about monthly billing, hidden
+   for a currency without it (pricing/inr.ts, globals.css). */
+function Table({
+  head,
+  rows,
+  monthlyOnly = [],
+}: {
+  head: string[];
+  rows: string[][];
+  monthlyOnly?: string[];
+}) {
   return (
     <div className="overflow-x-auto rounded-[10px] border border-[#e6e1ee]">
       <table className="w-full min-w-[520px] border-collapse text-left text-[15px] leading-[1.6]">
@@ -77,7 +88,11 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row[0]} className="border-t border-[#e6e1ee] align-top">
+            <tr
+              key={row[0]}
+              data-monthly-only={monthlyOnly.includes(row[0]) ? "" : undefined}
+              className="border-t border-[#e6e1ee] align-top"
+            >
               {row.map((cell, i) => (
                 <td
                   key={i}
@@ -206,20 +221,21 @@ export default function TermsAndConditionsPage() {
             <Table
               head={["Option", "Subscription fee", "Commitment"]}
               rows={[
-                ["Monthly payments", "€69 per month", "12 months"],
+                ["Monthly payments", `${EUR_EN.monthly} per month`, "12 months"],
                 [
                   "Annual payment",
-                  "€690 per year, paid in advance",
+                  `${EUR_EN.yearly} per year, paid in advance`,
                   "12 months",
                 ],
               ]}
+              monthlyOnly={["Monthly payments"]}
             />
             <p>
-              There is a <B>one-time onboarding fee</B> of €290. Prices exclude
+              There is a <B>one-time onboarding fee</B> of {EUR_EN.onboarding}. Prices exclude
               VAT, which is applied as required by law. Your signed agreement
               records any custom work or different agreed price.
             </p>
-            <p>
+            <p data-monthly-only>
               <B>
                 Monthly payments spread the cost of an annual commitment. They
                 do not create a month-to-month subscription.
@@ -352,7 +368,7 @@ export default function TermsAndConditionsPage() {
                   another deadline or end the agreement for non-delivery. If our
                   delay leaves the website incomplete after the extra period,
                   you can end the agreement under this section and receive a
-                  full refund of the €290 onboarding fee and all prepaid
+                  full refund of the {EUR_EN.onboarding} onboarding fee and all prepaid
                   subscription fees, including VAT paid on those amounts. We pay
                   the refund within 14 calendar days of termination. No
                   remaining subscription instalments are due for that signup.

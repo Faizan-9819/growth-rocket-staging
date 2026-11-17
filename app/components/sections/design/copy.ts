@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { Template } from "../../../designs/templates-data";
 
 /**
@@ -157,7 +158,7 @@ const FAQS: Record<string, { question: string; answer: string }[]> = {
     {
       question: "What does the package cost?",
       answer:
-        "Annual billing is €690 per year, or choose €69 per month. Both options have a €290 one-time onboarding fee. The annual price works out to €57.50 per month, billed annually.",
+        `${EUR_EN.designBillingAnswer}`,
     },
     {
       question: "What happens if I need help after launch?",
@@ -227,7 +228,7 @@ function generatedFaqs(
     {
       question: "What does the package cost?",
       answer:
-        "Annual billing is €690 per year, or choose €69 per month. Both options have a €290 one-time onboarding fee. The annual price works out to €57.50 per month, billed annually.",
+        `${EUR_EN.designBillingAnswer}`,
     },
     {
       question: "What happens if I need help after launch?",

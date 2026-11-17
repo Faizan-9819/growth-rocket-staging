@@ -1,3 +1,4 @@
+import { EUR_NL } from "@/pricing";
 import type { BlogContent, BlogTocEntry } from "@/app/lib/blog-content-types";
 import HeroSection from "@/components/blogs/electrician-website-cost/HeroSection";
 import {
@@ -68,7 +69,7 @@ const blog: BlogContent = {
         },
         {
           label: "Volledig ontzorgd",
-          price: "€690 per jaar + €290 eenmalige onboarding, alles inbegrepen",
+          price: `${EUR_NL.yearly} per jaar + ${EUR_NL.onboarding} eenmalige onboarding, alles inbegrepen`,
           icon: DoneForYouIcon,
         },
       ],
@@ -94,7 +95,7 @@ const blog: BlogContent = {
         models: [
           "Doe-het-zelf websitebouwers — ongeveer €10 tot €25 per maand (jij bouwt en beheert alles zelf)",
           "Freelancer of webbureau — €1.000 tot €3.000 vooraf, plus hosting en onderhoud",
-          "Volledig ontzorgd jaarabonnement — €690 per jaar, plus €290 eenmalige onboarding",
+          `Volledig ontzorgd jaarabonnement — ${EUR_NL.yearly} per jaar, plus ${EUR_NL.onboarding} eenmalige onboarding`,
         ],
         outro:
           "Elk model past bij een ander soort bedrijf. De juiste keuze hangt af van je tijd, je technische handigheid en wat de website voor jouw bedrijf moet doen.",
@@ -206,7 +207,7 @@ const blog: BlogContent = {
           num: "03",
           eyebrow: "Optie 3",
           title:
-            "Volledig ontzorgd websitesysteem (€690 per jaar of €69 per maand)",
+            `Volledig ontzorgd websitesysteem (${EUR_NL.yearlyOrMonthly})`,
           intro: [
             "Dit model is gebouwd voor ondernemers die niet met websites bezig willen zijn — maar wel een website willen die zijn werk doet.",
             "In plaats van gereedschap of een eenmalige bouw wordt alles voor je geregeld, voor één vaste prijs per jaar. De website wordt gemaakt, beheerd en doorlopend bijgewerkt — zonder dat jij naar hosting, plugins of freelancers hoeft om te kijken. Volledig ontzorgd, in de letterlijke betekenis.",
@@ -228,11 +229,11 @@ const blog: BlogContent = {
           ],
           pricingLabel: "Gangbare Growth Rocket-prijzen",
           pricingLines: [
-            "Professional: €690 per jaar of €69 per maand",
+            `Professional: ${EUR_NL.yearlyOrMonthly}`,
             "Plus: op maat, afhankelijk van je wensen",
           ],
           pricingNote:
-            "Omgerekend is dat €57,50 per maand, één vaste jaarprijs van €690 — zonder de uren en de leercurve van zelf bouwen.",
+            `${EUR_NL.spreadMonthly} — zonder de uren en de leercurve van zelf bouwen.`,
           chooseLabel: "Wanneer dit model past",
           chooseText:
             "Kies dit als je binnen ongeveer een week een professionele website online wilt, een voorspelbare jaarprijs prettig vindt en geen tijd wilt kwijtraken aan updates of technisch gedoe. Dit past doorgaans het best bij zelfstandige elektriciens, zzp'ers en kleine teams van twee tot tien mensen die iets betrouwbaars en onderhoudsarms zoeken.",
@@ -255,14 +256,14 @@ const blog: BlogContent = {
         rows: [
           {
             label: "Kosten vooraf",
-            values: ["€0", "€1.000–€3.000", "€290 eenmalig"],
+            values: ["€0", "€1.000–€3.000", `${EUR_NL.onboarding} eenmalig`],
           },
           {
             label: "Doorlopende kosten",
             values: [
               "€10–€25 per maand",
               "€10–€20 per maand hosting, plus losse updates",
-              "€690 per jaar (€69 per maand)",
+              `${EUR_NL.yearlyAndMonthly}`,
             ],
           },
           {
@@ -309,7 +310,7 @@ const blog: BlogContent = {
         yearOneItems: [
           "Doe-het-zelfbouwer — zo'n €120–€300 per jaar, plus 15 tot 25 uur van je eigen tijd",
           "Freelancer of bureau — €1.000–€3.000 vooraf, plus zo'n €120–€240 per jaar aan hosting en betaalde updates → doorgaans €1.500–€2.500 of meer in jaar één",
-          "Volledig ontzorgd systeem (Growth Rocket) — €690 per jaar, plus €290 eenmalige onboarding",
+          `Volledig ontzorgd systeem (Growth Rocket) — ${EUR_NL.yearly} per jaar, plus ${EUR_NL.onboarding} eenmalige onboarding`,
         ],
         yearOneEmphasis:
           "Het verschil zit niet alleen in het bedrag — het zit in hoe voorspelbaar dat bedrag blijft.",

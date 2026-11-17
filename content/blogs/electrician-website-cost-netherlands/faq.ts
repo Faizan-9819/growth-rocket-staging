@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { BlogFaqItem } from "@/app/lib/blog-content-types";
 
 const faq: BlogFaqItem[] = [
@@ -9,7 +10,7 @@ const faq: BlogFaqItem[] = [
   {
     question: "What does a Growth Rocket website cost?",
     answer:
-      "Growth Rocket costs €690 per year, plus a one-time €290 onboarding fee. The yearly price includes the website, hosting, domain management, updates and the enquiry and booking system — with no separate charges for maintenance or changes.",
+      `Growth Rocket costs ${EUR_EN.yearly} per year, plus a one-time ${EUR_EN.onboarding} onboarding fee. The yearly price includes the website, hosting, domain management, updates and the enquiry and booking system — with no separate charges for maintenance or changes.`,
   },
   {
     question: "Is a €10/month website enough for an electrician?",

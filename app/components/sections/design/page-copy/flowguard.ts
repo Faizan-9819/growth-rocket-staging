@@ -1,3 +1,4 @@
+import { EUR_EN, EUR_NL } from "@/pricing";
 import type { Locale } from "../../../../i18n/config";
 import type { PageOwnCopy } from "./shinesquad";
 
@@ -125,7 +126,7 @@ const en: PageOwnCopy = {
       },
       {
         question: "What does FlowGuard cost, and how quickly can it go live?",
-        answer: "The Growth Rocket package costs €69 per month or €690 per year, plus a €290 one-time onboarding fee. Prices exclude VAT. Your website can be ready in 7 working days after we receive all required information and materials, provided you give your approvals on time.",
+        answer: `The Growth Rocket package costs ${EUR_EN.monthlyOrYearly}, plus a ${EUR_EN.onboarding} one-time onboarding fee. Prices exclude VAT. Your website can be ready in 7 working days after we receive all required information and materials, provided you give your approvals on time.`,
       },
     ],
   },
@@ -263,7 +264,7 @@ const nl: PageOwnCopy = {
       },
       {
         question: "Wat kost FlowGuard en hoe snel kan de website online?",
-        answer: "Het Growth Rocket-pakket kost €69 per maand of €690 per jaar, plus €290 eenmalige opstartkosten. Prijzen zijn exclusief btw. Je website kan in 7 werkdagen online, nadat we alle benodigde informatie en materialen hebben ontvangen en als je op tijd je akkoord geeft.",
+        answer: `Het Growth Rocket-pakket kost ${EUR_NL.monthlyOrYearly}, plus ${EUR_NL.onboarding} eenmalige opstartkosten. Prijzen zijn exclusief btw. Je website kan in 7 werkdagen online, nadat we alle benodigde informatie en materialen hebben ontvangen en als je op tijd je akkoord geeft.`,
       },
     ],
   },

@@ -77,6 +77,8 @@ export type BillingPlanCopy = {
   saving?: string;
 };
 
+/* Price lines hold "{token}" placeholders from /pricing (pricing/view.ts),
+   filled in the visitor's currency by DesignBillingCard. */
 export type BillingCopy = {
   /** Accessible name of the billing switch. */
   groupLabel: string;
@@ -84,6 +86,8 @@ export type BillingCopy = {
   save: string;
   monthly: string;
   plans: { annual: BillingPlanCopy; monthly: BillingPlanCopy };
+  /** The annual detail line for a currency without per-month figures. */
+  billedAnnually?: string;
   setupFee: string;
   setupLabel: string;
   taxNote?: string;

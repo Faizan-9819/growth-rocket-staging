@@ -1,4 +1,5 @@
 "use client";
+import { EUR_EN, EUR_NL } from "@/pricing";
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Reveal from "../../Reveal";
@@ -104,8 +105,8 @@ export default function HowItWorks() {
       >
         <span className="font-poppins text-[14px] lg:text-[15px] text-center md:text-start font-semibold text-white">
           {t({
-            en: "One system. One subscription. From €69 per month.",
-            nl: "Eén systeem. Eén abonnement. Vanaf €69 per maand.",
+            en: `One system. One subscription. From ${EUR_EN.perPeriod}.`,
+            nl: `Eén systeem. Eén abonnement. Vanaf ${EUR_NL.perPeriod}.`,
           })}
         </span>
         <a

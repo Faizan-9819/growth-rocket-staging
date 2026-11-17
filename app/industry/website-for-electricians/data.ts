@@ -1,3 +1,4 @@
+import { EUR_EN, EUR_NL } from "@/pricing";
 /* Copy from finalcontent/Growth-Rocket-Electricians(-NL)-Standalone.html.
    Only the billing toggle rewrites content at runtime on those pages, so their
    static markup is the real copy. The blocks every industry page shares
@@ -112,7 +113,7 @@ const en = buildIndustryCopy("en", {
 
   PRICING: {
     intro:
-      "One complete Growth Rocket package for your electrical business, with an annual or monthly subscription and a one-time onboarding fee.",
+      `One complete Growth Rocket package for your electrical business, with ${EUR_EN.subscriptionKindsA} and a one-time onboarding fee.`,
     bespokeSubject: BESPOKE_SUBJECT,
   },
 
@@ -164,7 +165,7 @@ const en = buildIndustryCopy("en", {
     {
       question: "What will I pay to get started?",
       answer:
-        "Annual billing is €690 per year plus €290 one-time onboarding: €980 for the first year before any separately agreed extras. Monthly billing is €69 per month plus the same onboarding fee. Annual billing saves €138 compared with 12 monthly payments.",
+        `Annual billing is ${EUR_EN.yearly} per year plus ${EUR_EN.onboarding} one-time onboarding: ${EUR_EN.firstYear} for the first year before any separately agreed extras.${EUR_EN.monthlyBillingSentence}${EUR_EN.annualSavingSentence}`,
     },
     {
       question: "What happens when I need help or a change?",
@@ -298,7 +299,7 @@ const nl = buildIndustryCopy("nl", {
 
   PRICING: {
     intro:
-      "Eén Growth Rocket-pakket voor je elektrotechnisch bedrijf. Je betaalt per jaar of per maand, plus eenmalige opstartkosten.",
+      `Eén Growth Rocket-pakket voor je elektrotechnisch bedrijf. ${EUR_NL.payPerPeriod}, plus eenmalige opstartkosten.`,
     bespokeSubject: BESPOKE_SUBJECT,
   },
 
@@ -352,7 +353,7 @@ const nl = buildIndustryCopy("nl", {
     {
       question: "Wat betaal ik om te starten?",
       answer:
-        "Bij jaarlijkse betaling betaal je €690 per jaar plus €290 eenmalige opstartkosten: €980 voor het eerste jaar, exclusief eventuele apart afgesproken extra’s. Bij maandelijkse betaling betaal je €69 per maand plus dezelfde opstartkosten. Met jaarlijkse betaling bespaar je €138 ten opzichte van 12 maandbetalingen.",
+        `Bij jaarlijkse betaling betaal je ${EUR_NL.yearly} per jaar plus ${EUR_NL.onboarding} eenmalige opstartkosten: ${EUR_NL.firstYear} voor het eerste jaar, exclusief eventuele apart afgesproken extra’s.${EUR_NL.monthlyBillingSentence}${EUR_NL.annualSavingSentence}`,
     },
     {
       question: "Wat gebeurt er als ik hulp of een aanpassing nodig heb?",

@@ -1,4 +1,5 @@
 "use client";
+import { EUR_NL } from "@/pricing";
 
 import { Fragment } from "react";
 import ButtonF from "@/app/components/ui/ButtonF";
@@ -267,7 +268,7 @@ export function RoutesSection() {
           routeLabel="Route 3"
           title="Volledig ontzorgd (beheerd jaarabonnement)"
           stats={[
-            { label: "Kosten", value: "€690 per jaar" },
+            { label: "Kosten", value: `${EUR_NL.yearly} per jaar` },
             { label: "Doorlooptijd", value: "5–10 dagen" },
             { label: "Jouw inzet", value: "Laag" },
           ]}
@@ -278,7 +279,7 @@ export function RoutesSection() {
             },
             {
               label: "Kosten",
-              body: "€690 per jaar (€69 per maand), plus €290 eenmalige onboarding. Geen aparte rekeningen voor hosting, domein of onderhoud.",
+              body: `${EUR_NL.yearlyAndMonthly}, plus ${EUR_NL.onboarding} eenmalige onboarding. Geen aparte rekeningen voor hosting, domein of onderhoud.`,
             },
             {
               label: "Doorlooptijd",

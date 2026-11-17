@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 type Row = { label: string; diy: string; freelancer: string; dfy: string };
 
 const ROWS: Row[] = [
@@ -5,13 +6,13 @@ const ROWS: Row[] = [
     label: "Upfront cost",
     diy: "€0–€100",
     freelancer: "€1,500–€5,000",
-    dfy: "€290 (one-time onboarding)",
+    dfy: `${EUR_EN.onboarding} (one-time onboarding)`,
   },
   {
     label: "Ongoing cost",
     diy: "€10–€25 / month",
     freelancer: "€500–€1,000 / year + extras",
-    dfy: "€690 per year or €69 per month",
+    dfy: `${EUR_EN.yearlyOrMonthly}`,
   },
   {
     label: "Time to launch",

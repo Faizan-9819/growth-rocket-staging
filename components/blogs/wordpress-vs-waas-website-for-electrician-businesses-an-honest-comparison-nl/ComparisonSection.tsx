@@ -1,4 +1,5 @@
 "use client";
+import { EUR_NL } from "@/pricing";
 
 import { useState } from "react";
 
@@ -7,8 +8,8 @@ type Category = "kosten" | "tijd" | "beheer" | "flex" | "eigendom";
 type Row = { c: string; wp: string; abo: string; cat: Category };
 
 const ROWS: Row[] = [
-  { c: "Kosten vooraf", wp: "€0 software + €500–€2.500 bouw (freelancer)", abo: "€290 eenmalige onboarding, verder in het abonnement", cat: "kosten" },
-  { c: "Doorlopende kosten", wp: "€10–€30 per maand hosting + €50–€150 per maand onderhoud (indien uitbesteed)", abo: "€69 per maand (€690 per jaar), alles inbegrepen", cat: "kosten" },
+  { c: "Kosten vooraf", wp: "€0 software + €500–€2.500 bouw (freelancer)", abo: `${EUR_NL.onboarding} eenmalige onboarding, verder in het abonnement`, cat: "kosten" },
+  { c: "Doorlopende kosten", wp: "€10–€30 per maand hosting + €50–€150 per maand onderhoud (indien uitbesteed)", abo: `${EUR_NL.monthlyAndYearly}, alles inbegrepen`, cat: "kosten" },
   { c: "Tijd tot lancering", wp: "2–6 weken (afhankelijk van de freelancer)", abo: "binnen 7 dagen", cat: "tijd" },
   { c: "Wie doet de updates", wp: "Jij of je ontwikkelaar", abo: "De aanbieder", cat: "beheer" },
   { c: "Beveiliging en back-ups", wp: "Jouw verantwoordelijkheid", abo: "Inbegrepen", cat: "beheer" },

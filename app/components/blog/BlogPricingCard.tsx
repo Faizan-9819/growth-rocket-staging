@@ -1,18 +1,25 @@
-import ButtonF from "../ui/ButtonF";
+"use client";
 
+import ButtonF from "../ui/ButtonF";
+import { usePriceView } from "../CurrencyProvider";
+
+/* Prices come from /pricing, in the visitor's currency: the monthly price,
+   or the yearly one where there is no monthly billing. */
 const COPY = {
   en: {
     from: "From",
     period: "/ month",
+    periodYearly: "/ year",
     detail: "Website, hosting, Hub and support in one package.",
-    onboarding: "+ €290 one-time onboarding",
+    onboarding: "one-time onboarding",
     cta: "View pricing",
   },
   nl: {
     from: "Vanaf",
     period: "/ maand",
+    periodYearly: "/ jaar",
     detail: "Website, hosting, Hub en support in één pakket.",
-    onboarding: "+ €290 eenmalige onboarding",
+    onboarding: "eenmalige onboarding",
     cta: "Bekijk prijzen",
   },
 };
@@ -24,6 +31,7 @@ const COPY = {
  */
 export default function BlogPricingCard({ locale }: { locale: "en" | "nl" }) {
   const copy = COPY[locale];
+  const view = usePriceView(locale);
 
   return (
     <aside className="hidden xl:block xl:w-[220px] xl:flex-none">
@@ -34,10 +42,10 @@ export default function BlogPricingCard({ locale }: { locale: "en" | "nl" }) {
 
         <div className="mt-[10px] flex items-baseline gap-[6px]">
           <strong className="font-bricolage text-[44px] leading-[0.9] tracking-[-0.035em] text-[#e4fa65]">
-            €69
+            {view.monthly ?? view.yearly}
           </strong>
           <span className="font-sans text-[14px] font-medium text-[#c9c2d4]">
-            {copy.period}
+            {view.monthly ? copy.period : copy.periodYearly}
           </span>
         </div>
 
@@ -45,7 +53,7 @@ export default function BlogPricingCard({ locale }: { locale: "en" | "nl" }) {
           {copy.detail}
         </p>
         <p className="mt-[6px] mb-0 font-sans text-[12px] leading-[1.5] font-semibold text-[#e4fa65]">
-          {copy.onboarding}
+          {`+ ${view.onboarding} ${copy.onboarding}`}
         </p>
 
         <ButtonF

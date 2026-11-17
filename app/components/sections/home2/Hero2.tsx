@@ -5,8 +5,13 @@ import { watchHalfVisible } from "../../../lib/half-visible";
 import { RevealGroup, RevealItem } from "../../../features/FeatureReveal";
 import { useLanguage } from "../../../i18n/LanguageProvider";
 import type { Locale } from "../../../i18n/config";
+import { usePriceView } from "../../CurrencyProvider";
+import { fillPrices } from "@/pricing";
 
-/* Copy from Growth-Rocket-Homepage(-NL)-Standalone.html. */
+/* Copy from Growth-Rocket-Homepage(-NL)-Standalone.html. Price lines hold
+   "{token}" placeholders from /pricing (pricing/view.ts), filled in the
+   visitor's currency; the launch offer shows only where the currency has
+   one, otherwise the regular yearly price stands alone. */
 const HERO_COPY: Record<
   Locale,
   {
@@ -19,10 +24,12 @@ const HERO_COPY: Record<
     audience: string;
     /** Monthly option, before the yearly one: "€69/month or". */
     price: string;
-    /** Yearly list price, drawn struck through. */
+    /** Yearly list price, drawn struck through (launch offer only). */
     priceWas: string;
     /** Yearly launch price that replaces it. */
     priceNow: string;
+    /** The yearly price without a launch offer. */
+    priceRegular: string;
     /** Who the launch price is for, under the price line. */
     offer: string;
     /** Follows the price on the same line, muted: "+ €290 one-time setup". */
@@ -50,10 +57,11 @@ const HERO_COPY: Record<
     link: "See what’s included",
     audience: "Built for small businesses",
     price: "",
-    priceWas: "€690",
-    priceNow: "€490/year",
-    offer: "Launch price for the first 100 customers only",
-    fee: "+ €290 one-time setup",
+    priceWas: "{yearly}",
+    priceNow: "{offerYearly}/year",
+    priceRegular: "{yearly}/year",
+    offer: "Launch price for the first {offerCustomers} customers only",
+    fee: "+ {onboarding} one-time setup",
     launch: "Online within 7 working days",
     footnote: [
       "* Starts when we receive all required information and materials.",
@@ -78,10 +86,11 @@ const HERO_COPY: Record<
     link: "Bekijk wat je krijgt",
     audience: "Voor kleine bedrijven",
     price: "",
-    priceWas: "€690",
-    priceNow: "€490/jaar",
-    offer: "Introductieprijs alleen voor de eerste 100 klanten",
-    fee: "+ €290 eenmalige opstartkosten",
+    priceWas: "{yearly}",
+    priceNow: "{offerYearly}/jaar",
+    priceRegular: "{yearly}/jaar",
+    offer: "Introductieprijs alleen voor de eerste {offerCustomers} klanten",
+    fee: "+ {onboarding} eenmalige opstartkosten",
     launch: "Binnen 7 werkdagen online",
     footnote: [
       "* De termijn start na ontvangst van alle benodigde informatie en materialen.",
@@ -185,6 +194,9 @@ function HeroPhraseRotator({ phrases }: { phrases: string[] }) {
 export default function Hero2({ onStartClick }: { onStartClick?: () => void }) {
   const { locale } = useLanguage();
   const copy = HERO_COPY[locale];
+  const view = usePriceView(locale);
+  const fill = (line: string) => fillPrices(line, view);
+  const offer = view.hasOffer;
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // The video plays only while at least half of it is on screen. Muted is
@@ -281,14 +293,24 @@ export default function Hero2({ onStartClick }: { onStartClick?: () => void }) {
                 </span>
                 <span>
                   {copy.price}{" "}
-                  <s className="font-normal text-[#c9c2d4] decoration-[#c9c2d4]">
-                    {copy.priceWas}
-                  </s>{" "}
-                  <span className="text-[#e4fa65]">{copy.priceNow}</span>{" "}
-                  <span className="font-normal text-[#c9c2d4]">{copy.fee}</span>
-                  <span className="mt-[2px] block text-[13px] font-medium text-[#e4fa65]">
-                    {copy.offer}
+                  {offer ? (
+                    <>
+                      <s className="font-normal text-[#c9c2d4] decoration-[#c9c2d4]">
+                        {fill(copy.priceWas)}
+                      </s>{" "}
+                    </>
+                  ) : null}
+                  <span className="text-[#e4fa65]">
+                    {fill(offer ? copy.priceNow : copy.priceRegular)}
+                  </span>{" "}
+                  <span className="font-normal text-[#c9c2d4]">
+                    {fill(copy.fee)}
                   </span>
+                  {offer ? (
+                    <span className="mt-[2px] block text-[13px] font-medium text-[#e4fa65]">
+                      {fill(copy.offer)}
+                    </span>
+                  ) : null}
                 </span>
               </div>
               <div className="flex items-center gap-[10px]">

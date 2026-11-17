@@ -11,6 +11,8 @@ import IndustrySection from "./IndustrySection";
 import ButtonF from "../components/ui/ButtonF";
 import { useIndustryCopy, type OfferFeature } from "./copy";
 import { useLanguage } from "../i18n/LanguageProvider";
+import { usePriceView } from "../components/CurrencyProvider";
+import { fillPrices } from "@/pricing";
 import { localizedHref } from "../i18n/locale-href";
 
 /* Card shell, header, rows, foot note and the `+` medallion all mirror home2's
@@ -112,6 +114,14 @@ function OfferCard({
 export default function IndustryOffer() {
   const { OFFER } = useIndustryCopy();
   const { locale } = useLanguage();
+  // "From {monthly} / month", or the yearly price without monthly billing.
+  const view = usePriceView(locale);
+  const monthlyPrice = fillPrices(OFFER.package.price, view);
+  const packagePrice = monthlyPrice ?? view.yearly;
+  const packagePeriod =
+    monthlyPrice === null
+      ? OFFER.package.pricePeriodYearly
+      : OFFER.package.pricePeriod;
   return (
     <IndustrySection
       id="industry-package"
@@ -244,9 +254,9 @@ export default function IndustryOffer() {
             <p className="font-sans text-[15px] text-[#45492c]">
               {OFFER.package.priceLead}{" "}
               <strong className="font-bricolage text-[28px] font-semibold tracking-[-0.03em] text-[#0a0516]">
-                {OFFER.package.price}
+                {packagePrice}
               </strong>
-              <span>{OFFER.package.pricePeriod}</span>
+              <span>{packagePeriod}</span>
             </p>
             <ButtonF
               href={localizedHref(OFFER.package.cta.href, locale)}

@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { Metadata } from "next";
 import HomeShell from "../components/sections/home2/HomeShell";
 import PricingHero from "../components/sections/pricing/PricingHero";
@@ -8,9 +9,9 @@ import { PRICING_FAQS } from "../components/sections/pricing/faqs";
 import JsonLd from "../components/JsonLd";
 import { buildFaqJsonLdFromItems, buildPageSchema, socialMeta } from "../lib/seo";
 
-const TITLE = "Small Business Website Pricing: €690/Year | Growth Rocket";
+const TITLE = `Small Business Website Pricing: ${EUR_EN.yearly}/Year | Growth Rocket`;
 const DESCRIPTION =
-  "€690 per year or €69 per month, plus a one-time €290 setup fee, excl. VAT. Website, Growth Rocket Hub, hosting, SSL, maintenance and support in one package.";
+  `${EUR_EN.yearlyOrMonthly}, plus a one-time ${EUR_EN.onboarding} setup fee, excl. VAT. Website, Growth Rocket Hub, hosting, SSL, maintenance and support in one package.`;
 
 export const metadata: Metadata = {
   title: TITLE,

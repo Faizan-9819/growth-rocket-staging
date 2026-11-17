@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import { templateHref } from "../designs/design-routes";
 import { templates } from "../designs/templates-data";
 import { getAllBlogEntries, urlSlugFor } from "../lib/blog-content";
@@ -33,7 +34,7 @@ ${getOffers()
 
   const body = `# Growth Rocket
 
-> Growth Rocket is a complete online business system for small businesses and trades: a professional website plus Growth Rocket Hub for enquiries, appointments, a contact book, quotes and invoices. Hosting, SSL, maintenance and support are included. One package: €690 per year or €69 per month, plus a one-time €290 onboarding fee (excl. VAT).
+> Growth Rocket is a complete online business system for small businesses and trades: a professional website plus Growth Rocket Hub for enquiries, appointments, a contact book, quotes and invoices. Hosting, SSL, maintenance and support are included. One package: ${EUR_EN.yearlyOrMonthly}, plus a one-time ${EUR_EN.onboarding} onboarding fee (excl. VAT).
 
 Growth Rocket is run by ${CONTACT_INFO.company}, ${CONTACT_INFO.addressLines.join(", ")}. Sales: ${CONTACT_INFO.emails[0]} · Support: ${CONTACT_INFO.emails[1]} · Phone and WhatsApp: ${CONTACT_INFO.phone}. The site is available in English and in Dutch (under /nl).
 
@@ -41,7 +42,7 @@ Growth Rocket is run by ${CONTACT_INFO.company}, ${CONTACT_INFO.addressLines.joi
 
 - [Home](${url("/")}): What Growth Rocket is and who it is for.
 - [Features](${url("/features")}): The website, appointments, enquiries, quotes and invoices, the contact book and support.
-- [Pricing](${url("/pricing")}): €690 per year or €69 per month, plus €290 onboarding, excl. VAT.
+- [Pricing](${url("/pricing")}): ${EUR_EN.yearlyOrMonthly}, plus ${EUR_EN.onboarding} onboarding, excl. VAT.
 - [Website designs](${url("/design")}): Website designs by industry, each adapted to the customer's business.
 - [Website for electricians](${url("/industry/website-for-electricians")}): The package for electrical businesses.
 - [Website for plumbers](${url("/industry/website-for-plumbers")}): The package for plumbing businesses.

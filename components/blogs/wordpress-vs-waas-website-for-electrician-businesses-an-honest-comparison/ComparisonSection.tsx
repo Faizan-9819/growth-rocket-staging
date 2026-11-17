@@ -1,4 +1,5 @@
 "use client";
+import { EUR_EN } from "@/pricing";
 
 import { useState } from "react";
 
@@ -10,13 +11,13 @@ const ROWS: Row[] = [
   {
     c: "Upfront cost",
     wp: "€0 software + €500–€2,500 build (freelancer)",
-    abo: "€290 one-off onboarding, then included in the subscription",
+    abo: `${EUR_EN.onboarding} one-off onboarding, then included in the subscription`,
     cat: "cost",
   },
   {
     c: "Ongoing cost",
     wp: "€10–€30/month hosting + €50–€150/month maintenance (if outsourced)",
-    abo: "€69/month (€690/year), all-in",
+    abo: `${EUR_EN.monthlyAndYearly}, all-in`,
     cat: "cost",
   },
   {

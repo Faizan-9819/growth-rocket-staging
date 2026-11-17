@@ -1,3 +1,4 @@
+import { EUR_EN, EUR_NL } from "@/pricing";
 /* Copy from content/seprate-pages/Growth-Rocket-05-Accountants-Industry-Page.docx.pdf.
    Shared blocks (prices, Hub card, launch steps…) come from
    app/industry/shared.ts. */
@@ -110,7 +111,7 @@ const en = buildIndustryCopy("en", {
 
   PRICING: {
     intro:
-      "One Growth Rocket package for your accounting practice, with annual or monthly billing and a one-time onboarding fee.",
+      `One Growth Rocket package for your accounting practice, with ${EUR_EN.billingKinds} and a one-time onboarding fee.`,
     bespokeSubject: BESPOKE_SUBJECT,
   },
 
@@ -142,7 +143,7 @@ const en = buildIndustryCopy("en", {
     {
       question: "How much does a website for an accounting practice cost?",
       answer:
-        "Growth Rocket costs €69 per month or €690 per year, plus a €290 one-time onboarding fee. This includes your professional website, Growth Rocket Hub, hosting, SSL, maintenance and support. Annual billing saves €138 compared with 12 monthly payments. Extra pages or bespoke functionality are discussed separately.",
+        `Growth Rocket costs ${EUR_EN.monthlyOrYearly}, plus a ${EUR_EN.onboarding} one-time onboarding fee. This includes your professional website, Growth Rocket Hub, hosting, SSL, maintenance and support.${EUR_EN.annualSavingSentence} Extra pages or bespoke functionality are discussed separately.`,
     },
     {
       question: "Can new clients book an intake meeting online?",
@@ -298,7 +299,7 @@ const nl = buildIndustryCopy("nl", {
 
   PRICING: {
     intro:
-      "Eén Growth Rocket-pakket voor je accountantskantoor. Je betaalt per jaar of per maand, plus eenmalige opstartkosten.",
+      `Eén Growth Rocket-pakket voor je accountantskantoor. ${EUR_NL.payPerPeriod}, plus eenmalige opstartkosten.`,
     bespokeSubject: BESPOKE_SUBJECT,
   },
 
@@ -330,7 +331,7 @@ const nl = buildIndustryCopy("nl", {
     {
       question: "Wat kost een website voor een accountantskantoor?",
       answer:
-        "Growth Rocket kost €69 per maand of €690 per jaar, plus €290 eenmalige opstartkosten. Je krijgt een professionele website, Growth Rocket Hub, hosting, SSL, onderhoud en ondersteuning. Met jaarlijkse betaling bespaar je €138 ten opzichte van 12 maandbetalingen. Extra pagina’s of maatwerkfuncties bespreken we apart.",
+        `Growth Rocket kost ${EUR_NL.monthlyOrYearly}, plus ${EUR_NL.onboarding} eenmalige opstartkosten. Je krijgt een professionele website, Growth Rocket Hub, hosting, SSL, onderhoud en ondersteuning.${EUR_NL.annualSavingSentence} Extra pagina’s of maatwerkfuncties bespreken we apart.`,
     },
     {
       question: "Kunnen nieuwe klanten online een intakegesprek boeken?",

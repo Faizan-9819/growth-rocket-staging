@@ -1,10 +1,19 @@
 "use client";
-import { useCurrency } from "@/app/components/CurrencyProvider";
+import { EUR_NL, subscriptionCostAt } from "@/pricing";
+import { useCurrency, type CurrencyInfo } from "@/app/components/CurrencyProvider";
 
 import { useState } from "react";
 
-function fmt(n: number) {
-  return "€" + Math.round(n).toLocaleString("nl-NL");
+/* The sums below are worked out in euros (the WordPress figures are euro
+   estimates; Growth Rocket's own costs come from /pricing, brought to euros at
+   the day's rate). Shown, they're in the visitor's currency: formatted here
+   rather than left to CurrencyProvider, so our prices come out exact. */
+function makeFmt(fx: CurrencyInfo) {
+  return (eur: number) =>
+    fx.symbol +
+    Math.round(eur * fx.rate).toLocaleString(
+      fx.code === "INR" ? "en-IN" : "nl-NL",
+    );
 }
 
 const W = 720,
@@ -19,7 +28,15 @@ const PLOT_W = W - PL - PR,
 const xPos = (m: number) => PL + (m / 36) * PLOT_W;
 const yPos = (v: number) => PT + PLOT_H - (Math.min(v, MAX_Y) / MAX_Y) * PLOT_H;
 
-function CostChart({ wpAt, aboAt }: { wpAt: (m: number) => number; aboAt: (m: number) => number }) {
+function CostChart({
+  wpAt,
+  aboAt,
+  fmt,
+}: {
+  wpAt: (m: number) => number;
+  aboAt: (m: number) => number;
+  fmt: (eur: number) => string;
+}) {
   const months = Array.from({ length: 37 }, (_, m) => m);
   const wpPts = months.map((m) => [xPos(m), yPos(wpAt(m))] as const);
   const aboPts = months.map((m) => [xPos(m), yPos(aboAt(m))] as const);
@@ -64,13 +81,17 @@ export default function CostSection() {
   const [hourly, setHourly] = useState("");
   const [showAssump, setShowAssump] = useState(false);
 
+  const fx = useCurrency();
+  const fmt = makeFmt(fx);
   const zelf = maint === "self";
   const wpMonthly = 15 + 12.5 + (zelf ? 0 : 75);
   const wpAt = (m: number) => 1500 + m * wpMonthly;
-  const aboAt = (m: number) => 290 + m * 69;
+  // Growth Rocket's cost in the visitor's currency (/pricing), in euros.
+  const aboAt = (m: number) => subscriptionCostAt(fx.pricing, m) / fx.rate;
+  // Three years, rounded to the nearest 50 for the "≈" total.
+  const aboTotal = Math.round(subscriptionCostAt(fx.pricing, 36) / 50) * 50;
   // The rate is typed in the visitor's currency (its "€" label is converted
   // for them), and the sums below are in euros, so bring it back to euros.
-  const fx = useCurrency();
   const rate = parseFloat(hourly.replace(",", ".")) / fx.rate;
   const hasRate = !isNaN(rate) && rate > 0;
   const wpMoneyZelf = 1500 + 540 + 450;
@@ -134,8 +155,8 @@ export default function CostSection() {
           </p>
           <ul className="m-0 mt-3.5 flex list-none flex-col p-0">
             {[
-              ["Abonnement · €69/mnd, alles inbegrepen", "€2.484 / 3 jr"],
-              ["Onboarding · eenmalig", "€290"],
+              [`Abonnement · ${EUR_NL.perPeriodShort}, alles inbegrepen`, `${EUR_NL.threeYears} / 3 jr`],
+              ["Onboarding · eenmalig", `${EUR_NL.onboarding}`],
               ["Inhoudswijzigingen", "inbegrepen"],
             ].map(([label, value]) => (
               <li key={label} className="flex justify-between gap-3 border-t border-[#EEF0F4] py-2.5 font-sans text-[14.5px] text-[#374151]">
@@ -148,7 +169,7 @@ export default function CostSection() {
             ))}
             <li className="flex justify-between gap-3 border-t-2 border-[#E6E8EF] pt-3 font-sans text-[15px] font-bold text-[#1F2937]">
               <span>Driejaarstotaal</span>
-              <span className="whitespace-nowrap">≈ €2.750</span>
+              <span className="whitespace-nowrap">≈ {fmt(aboTotal / fx.rate)}</span>
             </li>
           </ul>
           <p className="mt-2.5 font-sans text-[13px] leading-[1.46] text-[#9AA1AC]">Zonder verborgen tijdskosten.</p>
@@ -241,7 +262,7 @@ export default function CostSection() {
               Website-abonnement
             </span>
           </div>
-          <CostChart wpAt={wpAt} aboAt={aboAt} />
+          <CostChart wpAt={wpAt} aboAt={aboAt} fmt={fmt} />
         </div>
 
         <div className="mt-4 overflow-x-auto">
@@ -299,7 +320,7 @@ export default function CostSection() {
                 WordPress: €1.500 bouw (eenmalig), €15/mnd hosting, €150/jr modules. Onderhoud €75/mnd bij
                 uitbesteden, of ±5 uur/mnd bij zelf doen (180 uur over 3 jaar).
               </li>
-              <li>Website-abonnement: €69/mnd (€690/jr), alles inbegrepen; €290 eenmalige onboarding.</li>
+              <li>{`Website-abonnement: ${EUR_NL.monthlyAndYearlyShort}, alles inbegrepen; ${EUR_NL.onboarding} eenmalige onboarding.`}</li>
               <li>
                 Het &ldquo;jouw scenario&rdquo;-bedrag komt van de uurwaarde die je zelf invult en staat los
                 van het redactionele voorbeeld hierboven. Bedragen zijn illustratief; er wordt geen

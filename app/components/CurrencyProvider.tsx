@@ -4,31 +4,49 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
 import {
   CURRENCY_COOKIE,
-  CURRENCY_SYMBOLS,
   isCurrencyCode,
   type CurrencyCode,
   type EurRates,
 } from "../lib/currency";
 import { createConverter } from "../lib/currency-dom";
+import { PRICING, priceView, type PriceLocale, type PriceView, type Pricing } from "@/pricing";
 
 export type CurrencyInfo = {
   code: CurrencyCode;
   symbol: string;
-  /** Euro → this currency. */
+  /** Euro → this currency, for figures that aren't our prices. */
   rate: number;
+  /** This currency's prices (pricing/). */
+  pricing: Pricing;
 };
 
-const EUR_INFO: CurrencyInfo = { code: "EUR", symbol: "€", rate: 1 };
+const EUR_INFO: CurrencyInfo = {
+  code: "EUR",
+  symbol: PRICING.EUR.symbol,
+  rate: 1,
+  pricing: PRICING.EUR,
+};
 const CurrencyContext = createContext<CurrencyInfo>(EUR_INFO);
 
 /** The visitor's currency; EUR on the server and until mounted. */
 export function useCurrency() {
   return useContext(CurrencyContext);
+}
+
+/**
+ * The visitor's prices, formatted for `locale` — for components that build
+ * their price lines themselves (billing cards, price blocks). EUR on the
+ * server and until mounted, so the first render matches the static page.
+ */
+export function usePriceView(locale: PriceLocale): PriceView {
+  const { pricing } = useCurrency();
+  return useMemo(() => priceView(pricing, locale), [pricing, locale]);
 }
 
 function readCurrencyCookie(): CurrencyCode | null {
@@ -40,13 +58,21 @@ function readCurrencyCookie(): CurrencyCode | null {
 }
 
 /**
- * Shows the site's euro prices in the visitor's currency (see lib/currency).
+ * Shows the site's prices in the visitor's currency (see lib/currency and
+ * /pricing).
  *
- * Pages stay static and render in euros; once mounted, this reads the
- * currency proxy.ts picked and rewrites every euro amount on the page
- * (lib/currency-dom), then keeps doing so as content changes (billing
- * toggles, client-side navigation, the page title). For EUR visitors it does
- * nothing at all.
+ * Pages stay static and render in euros. Once mounted, this reads the
+ * currency proxy.ts picked and:
+ *
+ * - re-renders the components that draw prices themselves (usePriceView),
+ * - rewrites the euro prices in the rest of the page's text (lib/currency-dom)
+ *   and keeps doing so as content changes (client-side navigation, the page
+ *   title, toggles),
+ * - marks <html> with `data-currency`, and with `data-no-monthly` when the
+ *   currency has no monthly billing, which hides `[data-monthly-only]`
+ *   blocks (globals.css).
+ *
+ * For EUR visitors it does nothing at all.
  */
 export default function CurrencyProvider({
   rates,
@@ -61,12 +87,17 @@ export default function CurrencyProvider({
     const code = readCurrencyCookie();
     if (!code || code === "EUR") return;
     const rate = rates[code];
+    const pricing = PRICING[code];
     // Mirrors an external value (the cookie) into state once, on mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setInfo({ code, symbol: CURRENCY_SYMBOLS[code], rate });
+    setInfo({ code, symbol: pricing.symbol, rate, pricing });
+
+    const html = document.documentElement;
+    html.dataset.currency = code;
+    if (!pricing.monthly) html.dataset.noMonthly = "";
 
     const converter = createConverter(code, rate, () =>
-      document.documentElement.lang === "nl" ? "nl-NL" : "en-GB",
+      html.lang === "nl" ? "nl" : "en",
     );
     const observer = new MutationObserver((records) => {
       for (const record of records) {
@@ -86,7 +117,7 @@ export default function CurrencyProvider({
       converter.convertTree(document.body);
       const title = document.querySelector("title");
       if (title) converter.convertTree(title);
-      observer.observe(document.documentElement, {
+      observer.observe(html, {
         childList: true,
         subtree: true,
         characterData: true,
@@ -98,6 +129,8 @@ export default function CurrencyProvider({
     return () => {
       window.clearTimeout(start);
       observer.disconnect();
+      delete html.dataset.currency;
+      delete html.dataset.noMonthly;
     };
   }, [rates]);
 

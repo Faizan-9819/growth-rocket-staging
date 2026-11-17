@@ -1,3 +1,4 @@
+import { EUR_NL } from "@/pricing";
 import type { Metadata } from "next";
 import HomeShell from "../../components/sections/home2/HomeShell";
 import PricingHero from "../../components/sections/pricing/PricingHero";
@@ -9,9 +10,9 @@ import JsonLd from "../../components/JsonLd";
 import { buildFaqJsonLdFromItems, buildPageSchema, socialMeta } from "../../lib/seo";
 
 /* Title and description from GGR Pages.xlsx (see META-TAGS.md). */
-const TITLE = "Kosten website laten maken: €690 per jaar | Growth Rocket";
+const TITLE = `Kosten website laten maken: ${EUR_NL.yearly} per jaar | Growth Rocket`;
 const DESCRIPTION =
-  "€690 per jaar of €69 per maand, plus €290 eenmalige opstartkosten, excl. btw. Website, Growth Rocket Hub, hosting, SSL, onderhoud en ondersteuning in één pakket.";
+  `${EUR_NL.yearlyOrMonthly}, plus ${EUR_NL.onboarding} eenmalige opstartkosten, excl. btw. Website, Growth Rocket Hub, hosting, SSL, onderhoud en ondersteuning in één pakket.`;
 
 export const metadata: Metadata = {
   title: TITLE,

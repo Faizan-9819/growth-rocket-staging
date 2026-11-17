@@ -1,4 +1,5 @@
 "use client";
+import { EUR_EN, EUR_NL } from "@/pricing";
 
 import HomeShell from "../components/sections/home2/HomeShell";
 import Hero2 from "../components/sections/home2/Hero2";
@@ -54,7 +55,7 @@ export default function Home2Client({
         <JsonLd
           data={buildPageSchema(
             "/",
-            "Small Business Website & Business Tools – From €69/Month",
+            `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`,
             "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.",
           )}
         />
@@ -63,8 +64,8 @@ export default function Home2Client({
             update never swaps the Dutch title for the English one. */}
         <LocaleMeta
           title={{
-            en: "Small Business Website & Business Tools – From €69/Month",
-            nl: "Website laten maken voor zzp’ers en mkb – vanaf €69 p/m",
+            en: `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`,
+            nl: `Website laten maken voor zzp’ers en mkb – vanaf ${EUR_NL.perPeriodTitle}`,
           }}
           description={{
             en: "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.",

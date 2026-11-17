@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { Metadata } from "next";
 import {
   Inter,
@@ -58,7 +59,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   icons: { icon: "/favicon.ico" },
-  title: "Small Business Website & Business Tools – From €69/Month",
+  title: `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`,
   description:
     "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.",
   alternates: {
@@ -72,13 +73,13 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: "Growth Rocket",
-    title: "Small Business Website & Business Tools – From €69/Month",
+    title: `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`,
     description:
       "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Small Business Website & Business Tools – From €69/Month",
+    title: `Small Business Website & Business Tools – From ${EUR_EN.perPeriodTitle}`,
     description:
       "A complete online business system for small businesses: your professional website and Growth Rocket Hub, with hosting, maintenance and support handled for you.",
   },

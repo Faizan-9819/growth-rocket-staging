@@ -1,10 +1,19 @@
 "use client";
-import { useCurrency } from "@/app/components/CurrencyProvider";
+import { EUR_EN, subscriptionCostAt } from "@/pricing";
+import { useCurrency, type CurrencyInfo } from "@/app/components/CurrencyProvider";
 
 import { useState } from "react";
 
-function fmt(n: number) {
-  return "€" + Math.round(n).toLocaleString("en-IE");
+/* The sums below are worked out in euros (the WordPress figures are euro
+   estimates; Growth Rocket's own costs come from /pricing, brought to euros at
+   the day's rate). Shown, they're in the visitor's currency: formatted here
+   rather than left to CurrencyProvider, so our prices come out exact. */
+function makeFmt(fx: CurrencyInfo) {
+  return (eur: number) =>
+    fx.symbol +
+    Math.round(eur * fx.rate).toLocaleString(
+      fx.code === "INR" ? "en-IN" : "en-IE",
+    );
 }
 
 const W = 720,
@@ -22,9 +31,11 @@ const yPos = (v: number) => PT + PLOT_H - (Math.min(v, MAX_Y) / MAX_Y) * PLOT_H;
 function CostChart({
   wpAt,
   aboAt,
+  fmt,
 }: {
   wpAt: (m: number) => number;
   aboAt: (m: number) => number;
+  fmt: (eur: number) => string;
 }) {
   const months = Array.from({ length: 37 }, (_, m) => m);
   const wpPts = months.map((m) => [xPos(m), yPos(wpAt(m))] as const);
@@ -107,13 +118,17 @@ export default function CostSection() {
   const [hourly, setHourly] = useState("");
   const [showAssump, setShowAssump] = useState(false);
 
+  const fx = useCurrency();
+  const fmt = makeFmt(fx);
   const zelf = maint === "self";
   const wpMonthly = 15 + 12.5 + (zelf ? 0 : 75);
   const wpAt = (m: number) => 1500 + m * wpMonthly;
-  const aboAt = (m: number) => 290 + m * 69;
+  // Growth Rocket's cost in the visitor's currency (/pricing), in euros.
+  const aboAt = (m: number) => subscriptionCostAt(fx.pricing, m) / fx.rate;
+  // Three years, rounded to the nearest 50 for the "≈" total.
+  const aboTotal = Math.round(subscriptionCostAt(fx.pricing, 36) / 50) * 50;
   // The rate is typed in the visitor's currency (its "€" label is converted
   // for them), and the sums below are in euros, so bring it back to euros.
-  const fx = useCurrency();
   const rate = parseFloat(hourly.replace(",", ".")) / fx.rate;
   const hasRate = !isNaN(rate) && rate > 0;
   const wpMoneyZelf = 1500 + 540 + 450;
@@ -185,8 +200,8 @@ export default function CostSection() {
           </p>
           <ul className="m-0 mt-3.5 flex list-none flex-col p-0">
             {[
-              ["Subscription · €69/mo, all-in", "€2,484 / 3 yrs"],
-              ["Onboarding · one-off", "€290"],
+              [`Subscription · ${EUR_EN.perPeriodShort}, all-in`, `${EUR_EN.threeYears} / 3 yrs`],
+              ["Onboarding · one-off", `${EUR_EN.onboarding}`],
               ["Content changes", "included"],
             ].map(([label, value]) => (
               <li
@@ -202,7 +217,7 @@ export default function CostSection() {
             ))}
             <li className="flex justify-between gap-3 border-t-2 border-[#E6E8EF] pt-3 font-sans text-[15px] font-bold text-[#1F2937]">
               <span>Three-year total</span>
-              <span className="whitespace-nowrap">≈ €2,750</span>
+              <span className="whitespace-nowrap">≈ {fmt(aboTotal / fx.rate)}</span>
             </li>
           </ul>
           <p className="mt-2.5 font-sans text-[13px] leading-[1.46] text-[#9AA1AC]">
@@ -331,7 +346,7 @@ export default function CostSection() {
               WaaS
             </span>
           </div>
-          <CostChart wpAt={wpAt} aboAt={aboAt} />
+          <CostChart wpAt={wpAt} aboAt={aboAt} fmt={fmt} />
         </div>
 
         <div className="mt-4 overflow-x-auto">
@@ -420,7 +435,7 @@ export default function CostSection() {
                 plugins. Maintenance €75/mo if outsourced, or ~5 h/mo if you do
                 it yourself (180 hours over 3 years).
               </li>
-              <li>WaaS: €69/mo (€690/yr), all-in; €290 one-off onboarding.</li>
+              <li>{`WaaS: ${EUR_EN.monthlyAndYearlyShort}, all-in; ${EUR_EN.onboarding} one-off onboarding.`}</li>
               <li>
                 The &ldquo;your scenario&rdquo; figure comes from the hourly
                 value you enter and is separate from the editorial example

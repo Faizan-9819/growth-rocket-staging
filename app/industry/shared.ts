@@ -1,13 +1,19 @@
 /* Copy every industry page shares word for word: prices, the Hub card, the
    package bar, launch steps, call band and closing CTA. The approved industry
    page documents (content/seprate-pages/) all repeat these from the
-   electrician page, so they live here once; a price change is made in one
-   place. Each industry's data.ts spreads these blocks in and adds its own
-   lines. */
+   electrician page, so they live here once. Each industry's data.ts spreads
+   these blocks in and adds its own lines.
 
+   Prices come from /pricing. Running text quotes the euro prices through
+   EUR_EN / EUR_NL (CurrencyProvider shows them in the visitor's currency); the
+   price blocks hold "{token}" placeholders (pricing/view.ts) that their
+   components fill in the visitor's currency. */
+
+import { EUR_EN, EUR_NL } from "@/pricing";
 import type { FeatureIconName } from "../components/sections/featureIcons";
 import type { Locale } from "../i18n/config";
 import type { IndustryCopy, OfferFeature } from "./types";
+
 
 /* Same icon per row in both locales, so only the labels are written out. */
 const WEBSITE_ICONS: FeatureIconName[] = [
@@ -109,8 +115,8 @@ const en: SharedCopy = {
   HERO: {
     headingAccent: "With a system for the business behind it.",
     primaryCta: { label: "Get Growth Rocket", href: "#industry-pricing" },
-    meta: ["Online within 7 working days*", "€69 per month or €690 per year"],
-    fee: "Plus €290 one-time onboarding fee.",
+    meta: ["Online within 7 working days*", EUR_EN.monthlyOrYearly],
+    fee: `Plus ${EUR_EN.onboarding} one-time onboarding fee.`,
     footnote:
       "* The timeframe starts once we receive all required information and materials and depends on timely approvals.",
     image: HERO_IMAGE,
@@ -168,8 +174,9 @@ const en: SharedCopy = {
       eyebrow: "TWO PARTS. ONE COMPLETE PACKAGE.",
       heading: "Your website + your business tools.",
       priceLead: "From",
-      price: "€69",
+      price: "{monthly}",
       pricePeriod: " / month",
+      pricePeriodYearly: " / year",
       cta: { label: "Explore the package", href: "/pricing" },
     },
   },
@@ -197,18 +204,18 @@ const en: SharedCopy = {
   /* The two states the [data-billing] switch toggles between. */
   BILLING: {
     annual: {
-      old: "€990",
-      current: "€690",
+      old: "{yearlyWas}",
+      current: "{yearly}",
       period: "/ year",
-      detail: "That’s €57.50 a month, billed annually.",
-      saving: "Save €138 compared with 12 monthly payments.",
+      detail: "That’s {yearlyPerMonth} a month, billed annually.",
+      saving: "Save {annualSaving} compared with 12 monthly payments.",
     },
     monthly: {
-      old: "€99",
-      current: "€69",
+      old: "{monthlyWas}",
+      current: "{monthly}",
       period: "/ month",
       detail: "Billed monthly.",
-      saving: "Save €138 a year when you choose annual billing.",
+      saving: "Save {annualSaving} a year when you choose annual billing.",
     },
   },
 
@@ -216,12 +223,13 @@ const en: SharedCopy = {
   BILLING_UI: {
     groupLabel: "Choose billing period",
     annually: "Annually",
-    saveBadge: "Save 17%",
+    saveBadge: "Save {savingPercent}",
     monthly: "Monthly",
+    billedAnnually: "Billed annually.",
   },
 
   SETUP_FEE: {
-    amount: "+ €290",
+    amount: "+ {onboarding}",
     label: "one-time onboarding fee",
   },
 
@@ -271,8 +279,9 @@ const en: SharedCopy = {
     /* The source ends the sentence above; there is no bolded price after it. */
     introStrong: "",
     priceLabel: "FROM",
-    price: "€69",
+    price: "{monthly}",
     pricePeriod: "/ month",
+    pricePeriodYearly: "/ year",
     cta: { label: "Book a call", href: CALL_HREF },
   },
 
@@ -297,8 +306,8 @@ const nl: SharedCopy = {
   HERO: {
     headingAccent: "Met een systeem voor het bedrijf erachter.",
     primaryCta: { label: "Kies Growth Rocket", href: "#industry-pricing" },
-    meta: ["Binnen 7 werkdagen online*", "€69 per maand of €690 per jaar"],
-    fee: "Plus €290 eenmalige opstartkosten.",
+    meta: ["Binnen 7 werkdagen online*", EUR_NL.monthlyOrYearly],
+    fee: `Plus ${EUR_NL.onboarding} eenmalige opstartkosten.`,
     footnote:
       "* De termijn begint zodra we alle benodigde informatie en materialen hebben ontvangen en is afhankelijk van tijdige goedkeuring.",
     image: HERO_IMAGE,
@@ -356,8 +365,9 @@ const nl: SharedCopy = {
       eyebrow: "TWEE ONDERDELEN. ÉÉN PAKKET.",
       heading: "Je website, met alles om je dagelijkse werk te regelen.",
       priceLead: "Vanaf",
-      price: "€69",
+      price: "{monthly}",
       pricePeriod: " / maand",
+      pricePeriodYearly: " / jaar",
       cta: { label: "Bekijk het pakket", href: "/pricing" },
     },
   },
@@ -384,30 +394,31 @@ const nl: SharedCopy = {
 
   BILLING: {
     annual: {
-      old: "€990",
-      current: "€690",
+      old: "{yearlyWas}",
+      current: "{yearly}",
       period: "/ jaar",
-      detail: "Dat is €57,50 per maand, jaarlijks gefactureerd.",
-      saving: "Je bespaart €138 ten opzichte van 12 maandbetalingen.",
+      detail: "Dat is {yearlyPerMonth} per maand, jaarlijks gefactureerd.",
+      saving: "Je bespaart {annualSaving} ten opzichte van 12 maandbetalingen.",
     },
     monthly: {
-      old: "€99",
-      current: "€69",
+      old: "{monthlyWas}",
+      current: "{monthly}",
       period: "/ maand",
       detail: "Maandelijks gefactureerd.",
-      saving: "Bespaar €138 per jaar als je jaarlijks betaalt.",
+      saving: "Bespaar {annualSaving} per jaar als je jaarlijks betaalt.",
     },
   },
 
   BILLING_UI: {
     groupLabel: "Kies je betaalperiode",
     annually: "Jaarlijks",
-    saveBadge: "Bespaar 17%",
+    saveBadge: "Bespaar {savingPercent}",
     monthly: "Maandelijks",
+    billedAnnually: "Jaarlijks gefactureerd.",
   },
 
   SETUP_FEE: {
-    amount: "+ €290",
+    amount: "+ {onboarding}",
     label: "eenmalige opstartkosten",
   },
 
@@ -456,8 +467,9 @@ const nl: SharedCopy = {
       "Je professionele website, Growth Rocket Hub, hosting, onderhoud en ondersteuning.",
     introStrong: "",
     priceLabel: "VANAF",
-    price: "€69",
+    price: "{monthly}",
     pricePeriod: "/ maand",
+    pricePeriodYearly: "/ jaar",
     cta: { label: "Plan een gesprek", href: CALL_HREF },
   },
 

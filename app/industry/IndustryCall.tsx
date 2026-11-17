@@ -4,6 +4,9 @@ import { RevealGroup, RevealItem } from "../features/FeatureReveal";
 import IndustrySection from "./IndustrySection";
 import ButtonF from "../components/ui/ButtonF";
 import { useIndustryCopy } from "./copy";
+import { usePriceView } from "../components/CurrencyProvider";
+import { useLanguage } from "../i18n/LanguageProvider";
+import { fillPrices } from "@/pricing";
 
 function openLeadForm() {
   window.dispatchEvent(new CustomEvent("open-lead-form"));
@@ -11,6 +14,13 @@ function openLeadForm() {
 
 export default function IndustryCall() {
   const { CALL } = useIndustryCopy();
+  const { locale } = useLanguage();
+  // "From {monthly} / month", or the yearly price without monthly billing.
+  const view = usePriceView(locale);
+  const monthlyPrice = fillPrices(CALL.price, view);
+  const price = monthlyPrice ?? view.yearly;
+  const period =
+    monthlyPrice === null ? CALL.pricePeriodYearly : CALL.pricePeriod;
   return (
     <IndustrySection
       id="industry-call"
@@ -54,10 +64,10 @@ export default function IndustryCall() {
             </span>
             <div className="mt-[6px] flex items-end gap-[7px]">
               <strong className="font-bricolage text-[clamp(58px,5.4vw,86px)] leading-[0.88] font-semibold tracking-[-0.025em] max-[900px]:text-[66px] text-[#e4fa65]">
-                {CALL.price}
+                {price}
               </strong>
               <small className="pb-[6px] font-sans text-[14px] leading-none font-semibold text-[#c9c2d4]">
-                {CALL.pricePeriod}
+                {period}
               </small>
             </div>
           </RevealItem>

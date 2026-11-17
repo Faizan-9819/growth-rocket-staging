@@ -1,3 +1,4 @@
+import { EUR_EN } from "@/pricing";
 import type { BlogContent, BlogTocEntry } from "@/app/lib/blog-content-types";
 import HeroSection from "@/components/blogs/electrician-website-cost/HeroSection";
 import {
@@ -66,7 +67,7 @@ const blog: BlogContent = {
         {
           label: "Done-for-you",
           price:
-            "€690 per year + €290 one-time onboarding, everything included",
+            `${EUR_EN.yearly} per year + ${EUR_EN.onboarding} one-time onboarding, everything included`,
           icon: DoneForYouIcon,
         },
       ],
@@ -91,7 +92,7 @@ const blog: BlogContent = {
         models: [
           "DIY website builders — roughly €10 to €25 per month (you build and manage everything yourself)",
           "Freelancer or web agency — €1,000 to €3,000 upfront, plus hosting and maintenance",
-          "Done-for-you yearly subscription — €690 per year, plus a one-time €290 onboarding fee",
+          `Done-for-you yearly subscription — ${EUR_EN.yearly} per year, plus a one-time ${EUR_EN.onboarding} onboarding fee`,
         ],
         outro:
           "Each model suits a different kind of business. The right choice depends on your time, your technical comfort, and what you actually want the website to do for your business.",
@@ -202,7 +203,7 @@ const blog: BlogContent = {
           num: "03",
           eyebrow: "Option 3",
           title:
-            "Done-for-You Business Website System (€690 per year or €69 per month)",
+            `Done-for-You Business Website System (${EUR_EN.yearlyOrMonthly})`,
           intro: [
             "This model is built for business owners who don't want to deal with websites — but do want a website that does its job.",
             "Instead of tools or a one-off build, everything is handled for you, for one fixed price per year. The website is built, managed and continuously updated — without you having to deal with hosting, plugins or freelancers. Fully managed, in the most literal sense.",
@@ -224,11 +225,11 @@ const blog: BlogContent = {
           ],
           pricingLabel: "Typical Growth Rocket pricing",
           pricingLines: [
-            "Professional: €690 per year or €69 per month",
+            `Professional: ${EUR_EN.yearlyOrMonthly}`,
             "Plus: bespoke, based on your requirements",
           ],
           pricingNote:
-            "Spread monthly, that's €57.50 — one fixed yearly price of €690, without the hours or the learning curve of building it yourself.",
+            `${EUR_EN.spreadMonthly}, without the hours or the learning curve of building it yourself.`,
           chooseLabel: "When this model makes sense",
           chooseText:
             "Choose this if you want a professional website live within about a week, like a predictable yearly price, and don't want to lose time to updates or technical hassle. It usually fits solo electricians, ZZP'ers and small teams of two to ten people looking for something reliable and low-maintenance.",
@@ -252,14 +253,14 @@ const blog: BlogContent = {
         rows: [
           {
             label: "Upfront cost",
-            values: ["€0", "€1,000–€3,000", "€290 one-time"],
+            values: ["€0", "€1,000–€3,000", `${EUR_EN.onboarding} one-time`],
           },
           {
             label: "Ongoing cost",
             values: [
               "€10–€25/month",
               "€10–€20/month hosting, plus paid updates",
-              "€690/year (€69/month)",
+              `${EUR_EN.yearlyAndMonthlySlash}`,
             ],
           },
           {
@@ -305,7 +306,7 @@ const blog: BlogContent = {
         yearOneItems: [
           "DIY builder — around €120–€300 per year, plus 15 to 25 hours of your own time",
           "Freelancer or agency — €1,000–€3,000 upfront, plus around €120–€240 per year for hosting and paid updates → typically €1,500–€2,500 or more in year one",
-          "Done-for-you system (Growth Rocket) — €690 per year, plus €290 one-time onboarding",
+          `Done-for-you system (Growth Rocket) — ${EUR_EN.yearly} per year, plus ${EUR_EN.onboarding} one-time onboarding`,
         ],
         yearOneEmphasis:
           "The difference isn't just the amount — it's how predictable that amount stays.",

@@ -1,15 +1,32 @@
-import { CURRENCY_SYMBOLS, type CurrencyCode } from "./currency";
+import {
+  amountSwaps,
+  formatMoney,
+  priceSwaps,
+  PRICING,
+  type CurrencyCode,
+  type PriceLocale,
+} from "@/pricing";
 
 /**
- * Rewrites the euro amounts in the page's text into another currency, in
- * place. The copy keeps its euros everywhere (data files, JSX, blog content),
- * and this converts what actually reaches the screen, so no price string
- * needs touching.
+ * Rewrites the page's euro prices into another currency, in place.
+ *
+ * The copy is written in euros, with its prices and price phrases taken from
+ * /pricing (EUR_TEXT). For a visitor shown another currency this rewrites
+ * what reaches the screen, in three passes over each piece of text:
+ *
+ * 1. Price phrases (pricing/phrases.ts) become the same phrase in the
+ *    visitor's prices — so "€69 per month or €690 per year" reads
+ *    "₹65,000 per year" for a yearly-only currency, and a sentence only about
+ *    monthly billing disappears.
+ * 2. A lone euro figure that is one of our prices ("€690", "€57.50") becomes
+ *    that figure in the visitor's prices (pricing/view.ts, priceAmounts).
+ * 3. Any other euro amount — someone else's prices, quoted in a blog post —
+ *    converts at the day's exchange rate, rounded to a whole number.
  *
  * Handles "€490", "€ 290", "€40.83", "€40,83", "€1,500", "€1.500",
  * "€20–45" / "€20 to 45" / "€20 tot 45" (both ends), and a "€" in its own
  * text node next to the number (`€{price}` in JSX). A lone "€" (an input's
- * label) just gets the new symbol. Amounts round to whole units.
+ * label) just gets the new symbol.
  *
  * Leaves alone: <script>, <style>, <code>, form fields, and anything inside
  * `data-no-currency`.
@@ -40,45 +57,62 @@ export function parseEuro(token: string): number {
 export type Converter = {
   /** Converts the text nodes and attributes under `root`. */
   convertTree: (root: Node) => void;
-  /** One string, or null when there is no euro amount in it. */
+  /** One string, or null when there is nothing to convert in it. */
   convertText: (text: string) => string | null;
 };
 
 export function createConverter(
   code: CurrencyCode,
   rate: number,
-  numberLocale: () => string,
+  /** The page's language, for number formatting ("1.500" in Dutch). */
+  pageLocale: () => PriceLocale,
 ): Converter {
-  const symbol = CURRENCY_SYMBOLS[code];
-  const format = (eur: number) =>
-    Math.round(eur * rate).toLocaleString(
-      code === "INR" ? "en-IN" : numberLocale(),
-    );
-  /* "€5k" in thousands keeps one decimal ("£4.2k"), or a chart's axis of
-     €3k, €4k could read £3k, £3k. */
+  const pricing = PRICING[code];
+  const symbol = pricing.symbol;
+  const phrases = priceSwaps(code);
+  const ours = amountSwaps(code);
+  const numberLocale = () =>
+    code === "INR" ? "en-IN" : pageLocale() === "nl" ? "nl-NL" : "en-GB";
+
+  /** The digits for a euro amount, without the symbol. */
   const amount = (token: string, thousands = false) => {
-    if (!thousands) return format(parseEuro(token));
-    const k = Math.round(parseEuro(token) * rate * 10) / 10;
-    return k.toLocaleString(code === "INR" ? "en-IN" : numberLocale());
+    const eur = parseEuro(token);
+    if (thousands) {
+      /* "€5k" keeps one decimal ("£4.2k"), or a chart's axis of €3k, €4k
+         could read £3k, £3k. */
+      const k = Math.round(eur * rate * 10) / 10;
+      return k.toLocaleString(numberLocale());
+    }
+    const set = ours.get(Math.round(eur * 100) / 100);
+    if (set !== undefined) {
+      return formatMoney(set, pricing, pageLocale()).slice(symbol.length);
+    }
+    return Math.round(eur * rate).toLocaleString(numberLocale());
   };
   const isK = (rest: string) => /^k(?![a-z])/i.test(rest);
 
   const convertText = (text: string): string | null => {
-    if (!text.includes("€")) return null;
-    const out = text.replace(
-      AMOUNT,
-      (
-        m: string,
-        a: string,
-        sep: string | undefined,
-        b: string | undefined,
-        at: number,
-      ) => {
-        const k = isK(text.slice(at + m.length));
-        const from = amount(a, k);
-        return `${symbol}${from}${sep && b ? `${sep}${amount(b, k)}` : ""}`;
-      },
-    );
+    let out = text;
+    for (const [from, to] of phrases) {
+      if (out.includes(from)) out = out.split(from).join(to);
+    }
+    if (out.includes("€")) {
+      out = out.replace(
+        AMOUNT,
+        (
+          m: string,
+          a: string,
+          sep: string | undefined,
+          b: string | undefined,
+          at: number,
+          whole: string,
+        ) => {
+          const k = isK(whole.slice(at + m.length));
+          const from = amount(a, k);
+          return `${symbol}${from}${sep && b ? `${sep}${amount(b, k)}` : ""}`;
+        },
+      );
+    }
     return out === text ? null : out;
   };
 
@@ -121,9 +155,8 @@ export function createConverter(
   };
 
   const convertNodes = (texts: Text[]) => {
-    for (let i = 0; i < texts.length; i++) {
-      const node = texts[i];
-      if (!node.data.includes("€") || skipped(node)) continue;
+    for (const node of texts) {
+      if (skipped(node)) continue;
 
       // `€{price}` renders as two text nodes: "€" then "490".
       if (TRAILING_EURO.test(node.data)) {
@@ -141,7 +174,7 @@ export function createConverter(
         }
       }
       const converted = convertText(node.data);
-      if (converted) node.data = converted;
+      if (converted !== null) node.data = converted;
     }
   };
 

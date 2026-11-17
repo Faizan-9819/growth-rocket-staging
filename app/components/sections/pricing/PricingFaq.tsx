@@ -7,6 +7,7 @@ import { ToggleIcon } from "../home2/FaqAccordion";
 import ButtonF from "../../ui/ButtonF";
 import { PRICING_FAQS_BY_LOCALE } from "./faqs";
 import type { Locale } from "../../../i18n/config";
+import { usePriceView } from "../../CurrencyProvider";
 
 /* Heading from Growth-Rocket-FAQs-English-and-Dutch.docx ("Your questions
    answered." / "Je vragen beantwoord."); the help card's copy from
@@ -179,6 +180,7 @@ function AccordionItem({
 export default function PricingFaq({ locale = "en" }: { locale?: Locale }) {
   const [open, setOpen] = useState(0);
   const copy = COPY[locale];
+  const view = usePriceView(locale);
 
   return (
     <section
@@ -216,7 +218,11 @@ export default function PricingFaq({ locale = "en" }: { locale?: Locale }) {
           amount={0.05}
           className="flex w-full flex-col gap-[16px]"
         >
-          {PRICING_FAQS_BY_LOCALE[locale].map(({ q, a }, i) => (
+          {/* A question only about monthly billing is left out for a
+              currency without it (pricing/inr.ts). */}
+          {PRICING_FAQS_BY_LOCALE[locale]
+            .filter((faq) => view.hasMonthly || !faq.monthlyOnly)
+            .map(({ q, a }, i) => (
             <AccordionItem
               key={q}
               question={q}
