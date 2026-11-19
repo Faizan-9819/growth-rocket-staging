@@ -14,7 +14,8 @@ import ContactCta, { type ContactCtaVariant } from "./ContactCta";
 import FooterLoopStrip from "./FooterLoopStrip";
 import ButtonF from "../../ui/ButtonF";
 import { openCookiePreferences } from "../../CookieConsent";
-import { CONTACT_INFO, phoneHref } from "@/app/lib/contact";
+import { CONTACT_INFO, phoneHref, whatsappHref } from "@/app/lib/contact";
+import { useContactPhone } from "../../useContactPhone";
 import { localizedHref } from "@/app/i18n/locale-href";
 import { legalHref } from "@/app/lib/legal";
 import type { Locale, Translation } from "@/app/i18n/config";
@@ -359,6 +360,7 @@ export default function Footer2({
   const locale: Locale =
     pathname === "/nl" || pathname.startsWith("/nl/") ? "nl" : "en";
   const copy = COPY[locale];
+  const phone = useContactPhone();
 
   return (
     <>
@@ -465,8 +467,8 @@ export default function Footer2({
           </div>
           <div className="flex flex-col gap-[6px] text-[14px] max-lg:text-[clamp(11px,3.05vw,13px)] leading-[1.55] text-[#a9a4c2]">
             <h3 className={`m-0 ${CONTACT_TITLE}`}>{copy.call}</h3>
-            <a href={phoneHref(CONTACT_INFO.phone)} className={CONTACT_LINK}>
-              {CONTACT_INFO.phone}
+            <a href={phoneHref(phone)} className={CONTACT_LINK}>
+              {phone}
             </a>
           </div>
           <div
@@ -474,21 +476,26 @@ export default function Footer2({
           >
             <h3 className={`m-0 ${CONTACT_TITLE}`}>{copy.followUs}</h3>
             <div className="flex items-center gap-[8px]">
-              {SOCIALS.map(({ label, href, Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="grid size-[38px] place-items-center rounded-full border border-white/30 text-[15px] text-[#a9a4c2] transition-[color,border-color] duration-200 ease-[ease] hover:border-[#e2f95c] hover:text-[#e2f95c]"
-                >
-                  <Icon />
-                  {/* Anchor text for crawlers; the icon alone reads as an
-                      empty link. */}
-                  <span className="sr-only">{label}</span>
-                </a>
-              ))}
+              {SOCIALS.map(({ label, href: baseHref, Icon }) => {
+                // WhatsApp follows the visitor's number (lib/contact).
+                const href =
+                  label === "WhatsApp" ? whatsappHref(phone) : baseHref;
+                return (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="grid size-[38px] place-items-center rounded-full border border-white/30 text-[15px] text-[#a9a4c2] transition-[color,border-color] duration-200 ease-[ease] hover:border-[#e2f95c] hover:text-[#e2f95c]"
+                  >
+                    <Icon />
+                    {/* Anchor text for crawlers; the icon alone reads as an
+                        empty link. */}
+                    <span className="sr-only">{label}</span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

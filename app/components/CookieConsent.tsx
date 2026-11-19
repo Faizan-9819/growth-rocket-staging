@@ -7,6 +7,8 @@ import { lenisStop, lenisStart } from "./LenisProvider";
 import ButtonF from "./ui/ButtonF";
 import { useLanguage } from "../i18n/LanguageProvider";
 import { legalHref } from "../lib/legal";
+import { whatsappHref } from "../lib/contact";
+import { useContactPhone } from "./useContactPhone";
 
 export const COOKIE_CONSENT_NAME = "gr_cookie_consent";
 export const COOKIE_CONSENT_EVENT = "gr-cookie-consent-changed";
@@ -397,6 +399,8 @@ function CookieIcon() {
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CookieConsent() {
   const { t } = useLanguage();
+  // The WhatsApp button follows the visitor's number (lib/contact).
+  const phone = useContactPhone();
   const [bannerOpen, setBannerOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
@@ -617,7 +621,7 @@ export default function CookieConsent() {
           while that covers the bar), rounded and bordered on its left; from
           lg it stands on the bottom edge, rounded on top. */}
       <a
-        href="https://wa.me/31857444176"
+        href={whatsappHref(phone)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

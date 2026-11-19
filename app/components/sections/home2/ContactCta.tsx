@@ -3,6 +3,8 @@
 import ButtonF from "../../ui/ButtonF";
 import { RevealGroup, RevealItem } from "../../../features/FeatureReveal";
 import { useLanguage } from "../../../i18n/LanguageProvider";
+import { phoneHref } from "../../../lib/contact";
+import { useContactPhone } from "../../useContactPhone";
 
 /**
  * Contact call-to-action — ported from `section#contact.contact-section` in
@@ -45,6 +47,7 @@ export default function ContactCta({
   variant?: ContactCtaVariant;
 } = {}) {
   const { t } = useLanguage();
+  const phone = useContactPhone();
   const partner = variant === "partner";
   const home = variant === "home";
   const mailto =
@@ -178,12 +181,12 @@ export default function ContactCta({
           </ButtonF>
 
           <ButtonF
-            href="tel:+31857444176"
+            href={phoneHref(phone)}
             variant="link"
             arrowSize={14}
             className="gap-[6px] border-b border-current font-sans text-[15px] leading-[1.65] [overflow-wrap:anywhere] md:text-[12px] lg:text-[15px]"
           >
-            +31 85 744 4176
+            {phone}
           </ButtonF>
         </RevealItem>
       </RevealGroup>

@@ -13,6 +13,7 @@ import {
   CURRENCY_COOKIE,
   currencyForCountry,
 } from "./app/lib/currency";
+import { PHONE_REGION_COOKIE, phoneRegionForCountry } from "./app/lib/contact";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
 const NL_PREFIX = "/nl";
@@ -205,6 +206,20 @@ function setCurrency(request: NextRequest, response: NextResponse) {
       maxAge: ONE_DAY,
       sameSite: "lax",
     });
+  }
+
+  // The visitor's phone number (REGIONAL_PHONES in lib/contact), from the
+  // same country.
+  const phoneRegion = country ? phoneRegionForCountry(country) : null;
+  const storedRegion = request.cookies.get(PHONE_REGION_COOKIE)?.value;
+  if (phoneRegion && storedRegion !== phoneRegion) {
+    response.cookies.set(PHONE_REGION_COOKIE, phoneRegion, {
+      path: "/",
+      maxAge: ONE_DAY,
+      sameSite: "lax",
+    });
+  } else if (!phoneRegion && storedRegion) {
+    response.cookies.delete(PHONE_REGION_COOKIE);
   }
 }
 

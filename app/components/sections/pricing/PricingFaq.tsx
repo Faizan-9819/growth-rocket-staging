@@ -8,6 +8,8 @@ import ButtonF from "../../ui/ButtonF";
 import { PRICING_FAQS_BY_LOCALE } from "./faqs";
 import type { Locale } from "../../../i18n/config";
 import { usePriceView } from "../../CurrencyProvider";
+import { useContactPhone } from "../../useContactPhone";
+import { CONTACT_INFO } from "../../../lib/contact";
 
 /* Heading from Growth-Rocket-FAQs-English-and-Dutch.docx ("Your questions
    answered." / "Je vragen beantwoord."); the help card's copy from
@@ -181,6 +183,7 @@ export default function PricingFaq({ locale = "en" }: { locale?: Locale }) {
   const [open, setOpen] = useState(0);
   const copy = COPY[locale];
   const view = usePriceView(locale);
+  const phone = useContactPhone();
 
   return (
     <section
@@ -226,7 +229,7 @@ export default function PricingFaq({ locale = "en" }: { locale?: Locale }) {
             <AccordionItem
               key={q}
               question={q}
-              answer={a}
+              answer={a.split(CONTACT_INFO.phone).join(phone)}
               index={i}
               isOpen={open === i}
               onOpen={() => setOpen(i)}

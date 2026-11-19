@@ -14,7 +14,8 @@ import { RevealGroup, RevealItem } from "../../features/FeatureReveal";
 import LeadEnquiryForm from "../LeadEnquiryForm";
 import HomeShell from "../sections/home2/HomeShell";
 import ButtonF from "../ui/ButtonF";
-import { CONTACT_INFO, phoneHref } from "../../lib/contact";
+import { CONTACT_INFO, phoneHref, whatsappHref } from "../../lib/contact";
+import { useContactPhone } from "../useContactPhone";
 
 type ContactPageContentProps = {
   locale: "en" | "nl";
@@ -108,6 +109,9 @@ export default function ContactPageContent({
   locale,
 }: ContactPageContentProps) {
   const copy = COPY[locale];
+  // The call and WhatsApp number follow the visitor's country (see
+  // REGIONAL_PHONES in lib/contact).
+  const phone = useContactPhone();
   const openBookingForm = () => {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("open-booking-form"));
@@ -204,22 +208,22 @@ export default function ContactPageContent({
                   label={copy.phoneLabel}
                 >
                   <a
-                    href={`https://wa.me/${CONTACT_INFO.phone.replace(/[^\d]/g, "")}`}
+                    href={whatsappHref(phone)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`inline-flex w-fit items-center gap-[8px] ${LINK}`}
                   >
                     <FaWhatsapp aria-hidden className="h-4 w-4 shrink-0" />
                     <span className="sr-only">{copy.whatsappLabel}: </span>
-                    {CONTACT_INFO.phone}
+                    {phone}
                   </a>
                   <a
-                    href={phoneHref(CONTACT_INFO.phone)}
+                    href={phoneHref(phone)}
                     className={`inline-flex w-fit items-center gap-[8px] ${LINK}`}
                   >
                     <Phone aria-hidden size={16} className="shrink-0" />
                     <span className="sr-only">{copy.callLabel}: </span>
-                    {CONTACT_INFO.phone}
+                    {phone}
                   </a>
                 </DetailRow>
 
