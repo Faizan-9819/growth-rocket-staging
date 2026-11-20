@@ -13,6 +13,7 @@ import {
   Sub,
   Ul,
 } from "../components/legal/LegalContent";
+import { CONTACT_INFO } from "@/contact";
 import LegalDocument from "../components/legal/LegalDocument";
 
 export const metadata: Metadata = {
@@ -81,7 +82,7 @@ export default function ImprintPage() {
                 Customer support: <Mail email="support@getgrowthrocket.com" />
               </>,
               <>
-                Phone: <Phone number="+31 85 744 4176" />
+                Phone: <Phone number={CONTACT_INFO.phone} />
               </>,
               <>
                 Website:{" "}
@@ -189,7 +190,7 @@ export default function ImprintPage() {
                 Customer support: <Mail email="support@getgrowthrocket.com" />
               </>,
               <>
-                Phone: <Phone number="+31 85 744 4176" />
+                Phone: <Phone number={CONTACT_INFO.phone} />
               </>,
             ]}
           />

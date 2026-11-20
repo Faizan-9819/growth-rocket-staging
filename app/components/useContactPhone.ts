@@ -5,7 +5,7 @@ import {
   CONTACT_INFO,
   PHONE_REGION_COOKIE,
   phoneForRegion,
-} from "../lib/contact";
+} from "@/contact";
 
 function readPhoneRegion(): string | null {
   const match = document.cookie.match(
@@ -20,8 +20,8 @@ const getSnapshot = () => phoneForRegion(readPhoneRegion());
 const getServerSnapshot = () => CONTACT_INFO.phone;
 
 /**
- * The phone number to show this visitor (see REGIONAL_PHONES in
- * lib/contact): CONTACT_INFO.phone on the server and during hydration, so
+ * The phone number to show this visitor (see PHONES in
+ * contact/phones.ts): CONTACT_INFO.phone on the server and during hydration, so
  * pages stay static, then the visitor's regional number once mounted.
  */
 export function useContactPhone(): string {

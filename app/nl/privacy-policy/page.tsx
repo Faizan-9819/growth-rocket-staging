@@ -14,6 +14,7 @@ import {
   Ul,
 } from "../../components/legal/LegalContent";
 import CookieSettingsButton from "../../components/legal/CookieSettingsButton";
+import { CONTACT_INFO } from "@/contact";
 import LegalDocument from "../../components/legal/LegalDocument";
 
 export const metadata: Metadata = {
@@ -642,7 +643,7 @@ export default function NlPrivacyPolicyPage() {
           <p>
             Parashift Technologies B.V., World Trade Center, Prinses
             Margrietplantsoen 33, 2595 AM &apos;s-Gravenhage, Nederland ·{" "}
-            <Mail email={SUPPORT_EMAIL} /> · <Phone number="+31 85 744 4176" />
+            <Mail email={SUPPORT_EMAIL} /> · <Phone number={CONTACT_INFO.phone} />
           </p>
         </Section>
       </LegalDocument>

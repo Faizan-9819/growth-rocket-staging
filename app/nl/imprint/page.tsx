@@ -12,6 +12,7 @@ import {
   Sub,
   Ul,
 } from "../../components/legal/LegalContent";
+import { CONTACT_INFO } from "@/contact";
 import LegalDocument from "../../components/legal/LegalDocument";
 
 export const metadata: Metadata = {
@@ -86,7 +87,7 @@ export default function NlImprintPage() {
                 <Mail email="support@getgrowthrocket.com" />
               </>,
               <>
-                Telefoon: <Phone number="+31 85 744 4176" />
+                Telefoon: <Phone number={CONTACT_INFO.phone} />
               </>,
               <>
                 Website: <ExternalLink href="https://www.getgrowthrocket.com/" />
@@ -201,7 +202,7 @@ export default function NlImprintPage() {
                 <Mail email="support@getgrowthrocket.com" />
               </>,
               <>
-                Telefoon: <Phone number="+31 85 744 4176" />
+                Telefoon: <Phone number={CONTACT_INFO.phone} />
               </>,
             ]}
           />

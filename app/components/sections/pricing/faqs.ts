@@ -14,6 +14,7 @@
  * euro text here follows pricing/eur.ts and visitors shown another currency
  * see their own prices.
  */
+import { CONTACT_INFO } from "@/contact";
 import { EUR_EN, EUR_NL } from "@/pricing";
 
 export type PricingFaq = {
@@ -71,7 +72,7 @@ export const PRICING_FAQS: PricingFaq[] = [
   },
   {
     q: "How do I get started?",
-    a: "Contact our sales team at sales@getgrowthrocket.com or +31 85 744 4176 to get started. We can discuss your business and answer questions about the website, Growth Rocket Hub and the package. If you need additional pages or custom functionality, let us know so we can discuss a bespoke plan.",
+    a: `Contact our sales team at sales@getgrowthrocket.com or ${CONTACT_INFO.phone} to get started. We can discuss your business and answer questions about the website, Growth Rocket Hub and the package. If you need additional pages or custom functionality, let us know so we can discuss a bespoke plan.`,
   },
 ];
 
@@ -125,7 +126,7 @@ export const PRICING_FAQS_NL: PricingFaq[] = [
   },
   {
     q: "Hoe kan ik beginnen?",
-    a: "Neem contact op met ons salesteam via sales@getgrowthrocket.com of +31 85 744 4176. We bespreken je bedrijf en beantwoorden je vragen over de website, Growth Rocket Hub en het pakket. Heb je extra pagina’s of maatwerkfunctionaliteit nodig, laat het ons weten. Dan bespreken we een pakket op maat.",
+    a: `Neem contact op met ons salesteam via sales@getgrowthrocket.com of ${CONTACT_INFO.phone}. We bespreken je bedrijf en beantwoorden je vragen over de website, Growth Rocket Hub en het pakket. Heb je extra pagina’s of maatwerkfunctionaliteit nodig, laat het ons weten. Dan bespreken we een pakket op maat.`,
   },
 ];
 

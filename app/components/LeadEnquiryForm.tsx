@@ -14,6 +14,7 @@ import ButtonF from "./ui/ButtonF";
 import HoneypotField from "./ui/HoneypotField";
 import { fireLeadConversion } from "./Analytics";
 import { isLikelyBot } from "../lib/spam-guard";
+import { CONTACT_INFO } from "@/contact";
 
 type LeadEnquiryFormProps = {
   idPrefix?: string;
@@ -325,7 +326,7 @@ export default function LeadEnquiryForm({
             required
             name="phone"
             type="tel"
-            placeholder="+31 85 744 4176"
+            placeholder={CONTACT_INFO.phone}
             value={formData.phone}
             onChange={handleInputChange}
             className={`w-full h-fit p-2 rounded-xl border ${fieldErrors.phone ? "border-red-500" : "border-[#ded8e7]"} focus:border-[#5b2dce] focus:ring-2 focus:ring-[#5b2dce]/20 outline-none transition-all font-sans text-[#0a0516] placeholder:text-[#8b8398]`}

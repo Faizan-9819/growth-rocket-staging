@@ -3,7 +3,7 @@
 import ButtonF from "../../ui/ButtonF";
 import { RevealGroup, RevealItem } from "../../../features/FeatureReveal";
 import { useLanguage } from "../../../i18n/LanguageProvider";
-import { phoneHref } from "../../../lib/contact";
+import { phoneHref } from "@/contact";
 import { useContactPhone } from "../../useContactPhone";
 
 /**

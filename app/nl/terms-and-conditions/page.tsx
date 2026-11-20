@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "../../components/JsonLd";
 import { buildPageSchema, socialMeta } from "../../lib/seo";
-import { CONTACT_INFO, phoneHref } from "@/app/lib/contact";
+import { CONTACT_INFO, phoneHref } from "@/contact";
 
 import LegalDocument, { legalSectionId } from "../../components/legal/LegalDocument";
 export const metadata: Metadata = {

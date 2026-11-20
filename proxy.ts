@@ -13,7 +13,7 @@ import {
   CURRENCY_COOKIE,
   currencyForCountry,
 } from "./app/lib/currency";
-import { PHONE_REGION_COOKIE, phoneRegionForCountry } from "./app/lib/contact";
+import { PHONE_REGION_COOKIE, phoneRegionForCountry } from "./contact";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
 const NL_PREFIX = "/nl";
@@ -208,7 +208,7 @@ function setCurrency(request: NextRequest, response: NextResponse) {
     });
   }
 
-  // The visitor's phone number (REGIONAL_PHONES in lib/contact), from the
+  // The visitor's phone number (PHONES in contact/phones.ts), from the
   // same country.
   const phoneRegion = country ? phoneRegionForCountry(country) : null;
   const storedRegion = request.cookies.get(PHONE_REGION_COOKIE)?.value;

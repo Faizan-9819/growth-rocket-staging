@@ -9,7 +9,7 @@ import { PRICING_FAQS_BY_LOCALE } from "./faqs";
 import type { Locale } from "../../../i18n/config";
 import { usePriceView } from "../../CurrencyProvider";
 import { useContactPhone } from "../../useContactPhone";
-import { CONTACT_INFO } from "../../../lib/contact";
+import { CONTACT_INFO } from "@/contact";
 
 /* Heading from Growth-Rocket-FAQs-English-and-Dutch.docx ("Your questions
    answered." / "Je vragen beantwoord."); the help card's copy from

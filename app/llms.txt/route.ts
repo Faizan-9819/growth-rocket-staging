@@ -2,7 +2,7 @@ import { EUR_EN } from "@/pricing";
 import { templateHref } from "../designs/design-routes";
 import { templates } from "../designs/templates-data";
 import { getAllBlogEntries, urlSlugFor } from "../lib/blog-content";
-import { CONTACT_INFO } from "../lib/contact";
+import { CONTACT_INFO } from "@/contact";
 import { legalHref } from "../lib/legal";
 import { OFFERS_INDEXABLE, getOffers, offerHref } from "../lib/offers";
 import { SITE_URL } from "../lib/seo";

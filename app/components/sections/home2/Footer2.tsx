@@ -14,7 +14,7 @@ import ContactCta, { type ContactCtaVariant } from "./ContactCta";
 import FooterLoopStrip from "./FooterLoopStrip";
 import ButtonF from "../../ui/ButtonF";
 import { openCookiePreferences } from "../../CookieConsent";
-import { CONTACT_INFO, phoneHref, whatsappHref } from "@/app/lib/contact";
+import { CONTACT_INFO, phoneHref, whatsappHref } from "@/contact";
 import { useContactPhone } from "../../useContactPhone";
 import { localizedHref } from "@/app/i18n/locale-href";
 import { legalHref } from "@/app/lib/legal";
@@ -477,7 +477,7 @@ export default function Footer2({
             <h3 className={`m-0 ${CONTACT_TITLE}`}>{copy.followUs}</h3>
             <div className="flex items-center gap-[8px]">
               {SOCIALS.map(({ label, href: baseHref, Icon }) => {
-                // WhatsApp follows the visitor's number (lib/contact).
+                // WhatsApp follows the visitor's number (contact/phones.ts).
                 const href =
                   label === "WhatsApp" ? whatsappHref(phone) : baseHref;
                 return (

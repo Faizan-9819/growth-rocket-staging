@@ -9,7 +9,7 @@ import { FaInstagram, FaLinkedin, FaWhatsapp, FaYoutube } from "react-icons/fa6"
 import { RiTwitterXFill } from "react-icons/ri";
 import ButtonF from "./ui/ButtonF";
 import { AUDIENCE_ANCHOR } from "./sections/home2/anchors";
-import { CONTACT_INFO, whatsappHref } from "../lib/contact";
+import { CONTACT_INFO, whatsappHref } from "@/contact";
 import { useContactPhone } from "./useContactPhone";
 
 import { useLanguage } from "../i18n/LanguageProvider";
@@ -492,7 +492,7 @@ function LangSwitcher() {
 
 export default function Navbar() {
   const { t, locale } = useLanguage();
-  // The drawer's WhatsApp link follows the visitor's number (lib/contact).
+  // The drawer's WhatsApp link follows the visitor's number (contact/phones.ts).
   const phone = useContactPhone();
   const LINKS = getLinks(t, locale);
   const [open, setOpen] = useState(false);

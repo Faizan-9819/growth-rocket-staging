@@ -14,7 +14,7 @@ import { RevealGroup, RevealItem } from "../../features/FeatureReveal";
 import LeadEnquiryForm from "../LeadEnquiryForm";
 import HomeShell from "../sections/home2/HomeShell";
 import ButtonF from "../ui/ButtonF";
-import { CONTACT_INFO, phoneHref, whatsappHref } from "../../lib/contact";
+import { CONTACT_INFO, phoneHref, whatsappHref } from "@/contact";
 import { useContactPhone } from "../useContactPhone";
 
 type ContactPageContentProps = {
@@ -110,7 +110,7 @@ export default function ContactPageContent({
 }: ContactPageContentProps) {
   const copy = COPY[locale];
   // The call and WhatsApp number follow the visitor's country (see
-  // REGIONAL_PHONES in lib/contact).
+  // PHONES in contact/phones.ts).
   const phone = useContactPhone();
   const openBookingForm = () => {
     if (typeof window !== "undefined") {

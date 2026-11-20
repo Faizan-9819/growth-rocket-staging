@@ -7,7 +7,7 @@ import { lenisStop, lenisStart } from "./LenisProvider";
 import ButtonF from "./ui/ButtonF";
 import { useLanguage } from "../i18n/LanguageProvider";
 import { legalHref } from "../lib/legal";
-import { whatsappHref } from "../lib/contact";
+import { whatsappHref } from "@/contact";
 import { useContactPhone } from "./useContactPhone";
 
 export const COOKIE_CONSENT_NAME = "gr_cookie_consent";
@@ -399,7 +399,7 @@ function CookieIcon() {
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CookieConsent() {
   const { t } = useLanguage();
-  // The WhatsApp button follows the visitor's number (lib/contact).
+  // The WhatsApp button follows the visitor's number (contact/phones.ts).
   const phone = useContactPhone();
   const [bannerOpen, setBannerOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
